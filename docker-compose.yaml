@@ -1,0 +1,91 @@
+version: '3'
+services:
+  node1:
+    image: hyperledger/besu:22.10.0-RC2
+    container_name: nodo1_lab
+    user: root
+    volumes:
+      - ./networkNodes/Node1/:/opt/besu/Node1
+    ports:
+      - "3000:3000"
+      - "8540:8540"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cd /opt/besu/Node1
+        besu --config-file=./config.toml
+    networks:
+      base:
+        ipv4_address: 172.21.0.2
+      
+  node2:
+    image: hyperledger/besu:22.10.0-RC2
+    container_name: nodo2_lab
+    user: root
+    volumes:
+      - ./networkNodes/Node2/:/opt/besu/Node2
+    ports:
+      - "3001:3001"
+      - "8541:8541"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cd /opt/besu/Node2
+        besu --config-file=./config.toml
+    networks:
+      base:
+        ipv4_address: 172.21.0.3
+    depends_on:
+      - node1
+
+  node3:
+    image: hyperledger/besu:22.10.0-RC2
+    container_name: nodo3_lab
+    user: root
+    volumes:
+      - ./networkNodes/Node3/:/opt/besu/Node3
+    ports:
+      - "3002:3002"
+      - "8542:8542"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cd /opt/besu/Node3
+        besu --config-file=./config.toml
+    networks:
+      base:
+        ipv4_address: 172.21.0.4
+    depends_on:
+      - node1
+
+  node4:
+    image: hyperledger/besu:22.10.0-RC2
+    container_name: nodo4_lab
+    user: root
+    volumes:
+      - ./networkNodes/Node4/:/opt/besu/Node4
+    ports:
+      - "3003:3003"
+      - "8543:8543"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cd /opt/besu/Node4
+        besu --config-file=./config.toml
+    networks:
+      base:
+        ipv4_address: 172.21.0.5
+    depends_on:
+      - node1
+networks:
+  base:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
