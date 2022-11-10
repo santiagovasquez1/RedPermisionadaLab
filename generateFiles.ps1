@@ -8,6 +8,11 @@ $gateWay = $args[4];
 $nodesOfNetwork = @();
 $enodes = @();
 
+if (Test-Path -Path $networkNodes) {
+    Remove-Item  $networkNodes -Recurse -Force
+}
+
+
 docker compose down
 
 if ($null -eq $numNodes) {

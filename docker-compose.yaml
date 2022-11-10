@@ -18,7 +18,7 @@ services:
     networks:
       base:
         ipv4_address: 172.21.0.2
-      
+
   node2:
     image: hyperledger/besu:22.10.0-RC2
     container_name: nodo2_lab
@@ -81,6 +81,23 @@ services:
         ipv4_address: 172.21.0.5
     depends_on:
       - node1
+
+  explorer:
+    image: consensys/quorum-explorer:cdc33b0
+    container_name: blockchain-explorer
+    volumes:
+      - ./quorum-explorer/config.json:/app/config.json
+      - ./quorum-explorer/env:/app/.env.production
+    ports:
+      - 25000:25000/tcp
+    networks:
+      - base
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+
 networks:
   base:
     driver: bridge

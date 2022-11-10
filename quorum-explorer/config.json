@@ -1,0 +1,28 @@
+{
+    "algorithm": "ibft2",
+    "nodes": [{
+            "name": "Node 1",
+            "client": "besu",
+            "rpcUrl": "http://node1:8540",
+            "privateTxUrl": ""
+        },
+        {
+            "name": "Node 2",
+            "client": "besu",
+            "rpcUrl": "http://node2:8541",
+            "privateTxUrl": ""
+        },
+        {
+            "name": "Node 3",
+            "client": "besu",
+            "rpcUrl": "http://node3:8542",
+            "privateTxUrl": ""
+        },
+        {
+            "name": "Node 4",
+            "client": "besu",
+            "rpcUrl": "http://node4:8543",
+            "privateTxUrl": ""
+        }
+    ]
+}
