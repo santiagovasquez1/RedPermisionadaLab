@@ -8,6 +8,7 @@ bin-release/
 .settings/
 networkFiles/
 networkNodes/
+.vscode/
 
 # Executables
 *.swf
