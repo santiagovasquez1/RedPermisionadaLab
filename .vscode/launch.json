@@ -8,8 +8,7 @@
             "name": "PowerShell Launch Script",
             "type": "PowerShell",
             "request": "launch",
-            // "script": "enter path or command to execute e.g.: ${workspaceFolder}/src/foo.ps1 or Invoke-Pester",
-            "script":" ${workspaceFolder}/generateFiles.ps1",
+            "script": " ${workspaceFolder}/generateFiles.ps1",
             "cwd": "${cwd}"
         },
         {
@@ -17,6 +16,12 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${file}"
+        },
+        {
+            "name": "Attach to .NET Functions",
+            "type": "coreclr",
+            "request": "attach",
+            "processId": "${command:azureFunctions.pickProcess}"
         }
     ]
 }

@@ -6,7 +6,7 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["RegistroCuentas/RegistroCuentas.csproj", "RegistroCuentas/"]
+COPY ./RegistroCuentas.csproj RegistroCuentas/
 RUN dotnet restore "RegistroCuentas/RegistroCuentas.csproj"
 COPY . .
 WORKDIR "/src/RegistroCuentas"

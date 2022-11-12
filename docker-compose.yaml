@@ -16,7 +16,7 @@ services:
         cd /opt/besu/Node1
         besu --config-file=./config.toml
     networks:
-      base:
+      rpc:
         ipv4_address: 172.21.0.2
 
   node2:
@@ -35,7 +35,7 @@ services:
         cd /opt/besu/Node2
         besu --config-file=./config.toml
     networks:
-      base:
+      rpc:
         ipv4_address: 172.21.0.3
     depends_on:
       - node1
@@ -56,7 +56,7 @@ services:
         cd /opt/besu/Node3
         besu --config-file=./config.toml
     networks:
-      base:
+      rpc:
         ipv4_address: 172.21.0.4
     depends_on:
       - node1
@@ -77,7 +77,7 @@ services:
         cd /opt/besu/Node4
         besu --config-file=./config.toml
     networks:
-      base:
+      rpc:
         ipv4_address: 172.21.0.5
     depends_on:
       - node1
@@ -91,18 +91,49 @@ services:
     ports:
       - 25000:25000/tcp
     networks:
-      - base
+      - rpc
     depends_on:
       - node1
       - node2
       - node3
       - node4
 
+  registroCuentas:
+    container_name: registrocuentas-container
+    image: registrocuentas:v1
+    build:
+      context: ./RegistroCuentas/RegistroCuentas
+      dockerfile: dockerfile
+    networks:
+      - rpc
+    ports:
+      - "8080:80"
+    depends_on:
+      - node1
+      - node2
+      - node3
+      - node4
+
+  mysql:
+    image: mysql:oracle
+    container_name: mysql-server-container
+    environment:
+      - MYSQL_ROOT_PASSWORD=abcd1234
+      - MYSQL_DATABASE=registrocuentasdb
+      - MYSQL_USER=svasquez
+      - MYSQL_PASSWORD=abcd1234
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/backup/:/var/lib/mysql
+    networks:
+      - rpc
 networks:
-  base:
+  rpc:
     driver: bridge
     ipam:
       driver: default
       config:
         - subnet: 172.21.0.0/16
           gateway: 172.21.0.1
+  
