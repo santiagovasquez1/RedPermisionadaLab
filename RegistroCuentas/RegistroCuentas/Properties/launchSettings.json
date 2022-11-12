@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "RegistroCuentas": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7099"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 34026,
+      "useSSL": false
+    }
+  }
+}
