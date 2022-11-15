@@ -1,5 +1,7 @@
 $workDir = Get-Location;
 $networkNodes = "networkNodes";
+$EnodeParams = "Enodes.params"
+$UrlsParams = "Urls.params";
 $numNodes = $args[0];
 $nodePrefix = $args[1];
 $p2pDefault = [int]$args[2];
@@ -10,6 +12,14 @@ $enodes = @();
 
 if (Test-Path -Path $networkNodes) {
     Remove-Item  $networkNodes -Recurse -Force
+}
+
+if (Test-Path -Path $EnodeParams) {
+    Remove-Item  $EnodeParams -Recurse -Force
+}
+
+if (Test-Path -Path $UrlsParams) {
+    Remove-Item  $UrlsParams -Recurse -Force
 }
 
 
@@ -73,55 +83,39 @@ besu operator generate-blockchain-config --config-file=./initialGenesis.json --t
 
 $keysDirs = Get-ChildItem $networkFiles/keys;
 $Counter = 0;
+New-Item $EnodeParams
+New-Item $UrlsParams
+$enodeConcat = "";
 
-foreach ($keyDir in $keysDirs) {
+for ($Counter = 0; $Counter -lt $keysDirs.Length; $Counter++) {
+    $keyDir = $keysDirs[$Counter];
     $nodePath = $nodesOfNetwork[$Counter]
     Copy-Item $networkFiles/keys/$keyDir/key ./$networkNodes/$nodePath/data
     Copy-Item $networkFiles/keys/$keyDir/key.pub ./$networkNodes/$nodePath/data
     Copy-Item $networkFiles/genesis.json ./$networkNodes/$nodePath
+    
     $p2pNumber = $p2pDefault + $Counter;
+    $rcpNumber = $rpcDefault + $Counter;
+    $uri = "http://node" + ($Counter + 1) + ":" + $rcpNumber;
+    # $uri = "http://127.0.0.1:" + $rcpNumber;
     $nodeIp = $gateWay -replace "0.1", ("0." + ($Counter + 2));
     $enodes += "enode://" + (Get-Content ./$networkNodes/$nodePath/data/key.pub).Substring(2) + "@" + $nodeIp + ":" + $p2pNumber;
+    
+    if ($Counter -lt $keysDirs.Length - 1) {
+        $enodeConcat = $enodeConcat + $enodes[$Counter] + ","
+    }
+    else {
+        $enodeConcat = $enodeConcat + $enodes[$Counter]
+    }
+
+    Add-Content ./$EnodeParams -Value $enodes[$Counter]
+    Add-Content ./$UrlsParams -Value $uri
     Write-Output $enodes[$Counter];
-    $Counter++;
 }
 
+docker compose build --no-cache
 docker compose up -d
 
-$enodesList = New-Object Collections.Generic.List[Collections.Generic.List[String]]
-$enodesList.Add($enodes);
-$params = @{
-    "jsonrpc" = "2.0";
-    "method"  = "perm_addNodesToAllowlist";
-    "params"  = $enodesList;
-    "id"      = 1;
-};
-
-# Add enode URLs for nodes to permissions
-for ($i = 0; $i -lt $enodes.Length; $i++) {   
-    $rcpNumber = $rpcDefault + $i;
-    $uri = "http://127.0.0.1:" + $rcpNumber;
-    Start-Sleep 3; 
-    Invoke-RestMethod -Uri $uri -Method Post -Body ($params | ConvertTo-Json);
-}
-
-# Add nodes as peers
-for ($i = 0; $i -lt $enodes.Length; $i++) {
-
-    $addPeerParam = @{
-        "jsonrpc" = "2.0";
-        "method"  = "admin_addPeer";
-        "params"  = @($enodes[$i]);
-        "id"      = 1;    
-    } ;
-    
-    for ($j = $i + 1; $j -lt $enodes.Length; $j++) {
-        $rcpNumber = $rpcDefault + $j;
-        $uri = "http://127.0.0.1:" + $rcpNumber;
-        Start-Sleep 3; 
-        Invoke-RestMethod -Uri $uri -Method Post -Body ($addPeerParam | ConvertTo-Json);  
-    }
-}
-
+# docker exec -i -e AzureWebJobsStorage="DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://host.docker.internal:10000/devstoreaccount1;TableEndpoint=http://host.docker.internal:10002/devstoreaccount1;QueueEndpoint=http://host.docker.internal:10001/devstoreaccount1" -w "/home/site/wwwroot/bin" registrocuentas-container sh -c ""func" host start --no-build --port 8080 | tee /dev/console"
 Write-Output "Fin del proceso";
 

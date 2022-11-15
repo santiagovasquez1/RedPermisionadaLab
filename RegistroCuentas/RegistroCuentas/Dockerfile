@@ -6,11 +6,19 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ./RegistroCuentas.csproj RegistroCuentas/
+COPY ["./RegistroCuentas.csproj", "RegistroCuentas/"]
 RUN dotnet restore "RegistroCuentas/RegistroCuentas.csproj"
 COPY . .
-WORKDIR "/src/RegistroCuentas"
+WORKDIR "/src"
 RUN dotnet build "RegistroCuentas.csproj" -c Release -o /app/build
+
+# RUN apt update -y
+# RUN apt upgrade -y
+# RUN apt install curl -y
+# RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+# RUN apt install nodejs -y
+# RUN npm install -g azure-functions-core-tools@3 --unsafe-perm true
+# CMD func start --port 80
 
 FROM build AS publish
 RUN dotnet publish "RegistroCuentas.csproj" -c Release -o /app/publish /p:UseAppHost=false

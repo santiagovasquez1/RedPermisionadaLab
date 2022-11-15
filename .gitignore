@@ -8,6 +8,9 @@ bin-release/
 .settings/
 networkFiles/
 networkNodes/
+mysql/
+build/
+
 
 # Executables
 *.swf
@@ -22,6 +25,7 @@ networkNodes/
 local.settings.json
 
 # User-specific files
+*.params
 *.suo
 *.user
 *.userosscache
