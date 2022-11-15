@@ -3,4 +3,4 @@ WORKDIR /app
 COPY . /app/
 RUN npm i
 RUN npm i -g truffle
-CMD truffle migrate --reset --network besu
+CMD sh ./run.sh
