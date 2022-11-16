@@ -63,8 +63,8 @@ const main = async() => {
             await main();
         } else {
             try {
-                const urls = fs.readFileSync('Urls.params', 'utf-8').split('\r\n');
-                const enodesTemp = fs.readFileSync('Enodes.params', 'utf-8').split('\r\n');
+                const urls = fs.readFileSync('Urls.params', 'utf-8').split('\n');
+                const enodesTemp = fs.readFileSync('Enodes.params', 'utf-8').split('\n');
                 const enodes = enodesTemp.slice(0, enodesTemp.length - 1);
                 const responses1 = await addNodesToNetwork(enodes, urls);
                 const responses2 = await adminAddPeer(enodes, urls);
@@ -74,6 +74,7 @@ const main = async() => {
                 process.exit();
             } catch (error) {
                 setTimeout(async() => {
+                    console.log(error)
                     await main();
                 }, 5000);
             }

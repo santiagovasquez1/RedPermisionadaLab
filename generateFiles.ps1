@@ -23,9 +23,9 @@ if (Test-Path -Path $UrlsParams) {
 }
 
 docker compose -f "./initial-besu.yaml" down;
-docker compose -f "./set-network-docker-compose.yaml" down
 docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" down
 docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" down
+docker compose -f "./set-network-docker-compose.yaml" down
 
 if ($null -eq $numNodes) {
     $numNodes = 4;
@@ -124,9 +124,9 @@ for ($Counter = 0; $Counter -lt $keysDirs.Length; $Counter++) {
 docker compose -f "./set-network-docker-compose.yaml" up -d 
 docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" up -d 
 
-# $filter = docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" ps --services --filter "status=exited";
+$filter = docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" ps -q --services --filter "status=exited" | Out-String -Stream;
 
-
+# Write-Output Out-String -Stream $filter
 
 docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" up -d 
 
