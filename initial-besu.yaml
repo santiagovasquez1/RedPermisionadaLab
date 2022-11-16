@@ -1,0 +1,15 @@
+version: "3"
+services:
+  besu-inital:
+    image: hyperledger/besu:22.10.0-RC2
+    container_name: initial-config
+    user: root
+    volumes:
+      - ./besu-config:/besu-config
+      - ./besu-config/initialGenesis.json:/besu-config/initialGenesis.json
+    entrypoint:
+      - /bin/bash
+      - -c
+      - |
+        cd /besu-config/
+        besu operator generate-blockchain-config --config-file=./initialGenesis.json --to=networkFiles --private-key-file-name=key

@@ -22,8 +22,10 @@ if (Test-Path -Path $UrlsParams) {
     Remove-Item  $UrlsParams -Recurse -Force
 }
 
-
-docker compose down
+docker compose -f "./initial-besu.yaml" down;
+docker compose -f "./set-network-docker-compose.yaml" down
+docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" down
+docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" down
 
 if ($null -eq $numNodes) {
     $numNodes = 4;
@@ -73,14 +75,21 @@ for ($i = 0; $i -lt $numNodes; $i++) {
     $nodesOfNetwork += $nodeName;
 }
 
-$networkFiles = "./networkfiles";
+$networkFiles = "./besu-config/networkFiles";
 
 if (Test-Path -Path $networkFiles) {
     Remove-Item  $networkFiles -Recurse -Force
 }
 
-besu operator generate-blockchain-config --config-file=./initialGenesis.json --to=networkFiles --private-key-file-name=key
+docker compose -f "./initial-besu.yaml" up -d
 
+$existNetworkFiles = Test-Path -Path $networkFiles
+while (-Not ($existNetworkFiles)) {
+    Start-Sleep 5;
+    $existNetworkFiles = Test-Path -Path $networkFiles;
+}
+
+docker compose -f "./initial-besu.yaml" down;
 $keysDirs = Get-ChildItem $networkFiles/keys;
 $Counter = 0;
 New-Item $EnodeParams
@@ -97,7 +106,6 @@ for ($Counter = 0; $Counter -lt $keysDirs.Length; $Counter++) {
     $p2pNumber = $p2pDefault + $Counter;
     $rcpNumber = $rpcDefault + $Counter;
     $uri = "http://node" + ($Counter + 1) + ":" + $rcpNumber;
-    # $uri = "http://127.0.0.1:" + $rcpNumber;
     $nodeIp = $gateWay -replace "0.1", ("0." + ($Counter + 2));
     $enodes += "enode://" + (Get-Content ./$networkNodes/$nodePath/data/key.pub).Substring(2) + "@" + $nodeIp + ":" + $p2pNumber;
     
@@ -113,9 +121,14 @@ for ($Counter = 0; $Counter -lt $keysDirs.Length; $Counter++) {
     Write-Output $enodes[$Counter];
 }
 
-docker compose build --no-cache
-docker compose up -d
+docker compose -f "./set-network-docker-compose.yaml" up -d 
+docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" up -d 
 
-# docker exec -i -e AzureWebJobsStorage="DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://host.docker.internal:10000/devstoreaccount1;TableEndpoint=http://host.docker.internal:10002/devstoreaccount1;QueueEndpoint=http://host.docker.internal:10001/devstoreaccount1" -w "/home/site/wwwroot/bin" registrocuentas-container sh -c ""func" host start --no-build --port 8080 | tee /dev/console"
+# $filter = docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" ps --services --filter "status=exited";
+
+
+
+docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" up -d 
+
 Write-Output "Fin del proceso";
 

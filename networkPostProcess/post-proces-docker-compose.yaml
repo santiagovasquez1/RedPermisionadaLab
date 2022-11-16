@@ -1,0 +1,18 @@
+version: '3'
+services:
+  networkPostProcess:
+    container_name: networkPostProcess-container
+    image: networkpostprocess:v1
+    build:
+      context: ./networkPostProcess
+      dockerfile: dockerfile
+    volumes:
+      - ../Enodes.params:/app/Enodes.params
+      - ../Urls.params:/app/Urls.params
+    networks:
+      redpermisionadalab_rpc:
+        ipv4_address: 172.21.0.7
+
+networks:
+  redpermisionadalab_rpc:
+    external: true
