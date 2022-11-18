@@ -1,0 +1,8 @@
+{
+    "/v1/cryptocurrency/listings/latest/v1/cryptocurrency/listings/*":{
+        "target": "https://sandbox-api.coinmarketcap.com",
+        "secure":false,
+        "logLevel": "debug",
+        "changeOrigin": true
+    }
+}

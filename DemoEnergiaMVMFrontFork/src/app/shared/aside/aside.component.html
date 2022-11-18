@@ -1,0 +1,126 @@
+<div>
+    <div class="sidebar">
+    
+        <div *ngIf="tipoContrato == 0" class="avatar-container" [routerLink]="['/dashboard/cliente']">
+            <img src="../../../assets/images/logoMVM.png" alt="">
+        </div>
+        <div *ngIf="tipoContrato == 1" class="avatar-container" [routerLink]="['/dashboard/comercializador']">
+            <img src="../../../assets/images/logoMVM.png" alt="">
+        </div>
+        <div *ngIf="tipoContrato == 2" class="avatar-container" [routerLink]="['/dashboard/generador']">
+            <img src="../../../assets/images/logoMVM.png" alt="">
+        </div>
+        <div *ngIf="tipoContrato == 3" class="avatar-container" [routerLink]="['/dashboard/regulador-mercado']">
+            <img src="../../../assets/images/logoMVM.png" alt="">
+        </div>
+    
+        <div class="container-section" *ngIf="tipoContrato == 0">
+            <!--<span class="title-section">Cliente</span>-->
+            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente']">
+                <mat-icon>info</mat-icon>
+                <span>Información</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente/tokens']">
+                <mat-icon>currency_exchange</mat-icon>
+                <span>Tokens</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente/lista-compras']">
+                <mat-icon>shopping_cart_checkout</mat-icon>
+                <span>Compras realizadas</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+        </div>
+    
+        <div class="container-section" *ngIf="tipoContrato == 1">
+            <!--<span class="title-section">Comercializador</span>-->
+            <a routerLinkActive="active" [routerLink]="['/dashboard/comercializador']">
+                <mat-icon>info</mat-icon>
+                <span>Información</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['/dashboard/comercializador/lista-clientes']">
+                <mat-icon>format_list_bulleted</mat-icon>
+                <span>Lista de clientes</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['comercializador/emisiones-de-compra','pendientes']">
+                <mat-icon>library_books</mat-icon>
+                <span>Emisiones de compra</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+        </div>
+    
+        <div class="container-section" *ngIf="tipoContrato==2">
+            <!--<span class="title-section">Generadores</span>-->
+            <a routerLinkActive="active" [routerLink]="['/dashboard/generador']">
+                <mat-icon>info</mat-icon>
+                <span>Información</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['generador/lista-plantas-energia']">
+                <mat-icon>factory</mat-icon>
+                <span>Plantas de energia</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['generador/tokens']">
+                <mat-icon>currency_exchange</mat-icon>
+                <span>Tokens</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+        </div>
+    
+        <div class="container-section" *ngIf="tipoContrato==3">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado']">
+                <mat-icon>info</mat-icon>
+                <span>Información</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado/registros']">
+                <mat-icon>book</mat-icon>
+                <span>Agentes del mercado</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado/ordenes-despacho']">
+                <mat-icon>send</mat-icon>
+                <span>Ordenes de despacho</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+        </div>
+    
+        <div class="container-section">
+            <a routerLinkActive="active" (click)="showTableroPrincipal == false ? showTableroPrincipal = true: showTableroPrincipal=false">
+                <mat-icon>dashboard</mat-icon>
+                <span>Panel de control</span>
+                <mat-icon *ngIf="!showTableroPrincipal">keyboard_arrow_down</mat-icon>
+                <mat-icon *ngIf="showTableroPrincipal">keyboard_arrow_up</mat-icon>
+            </a>
+    
+            <a routerLinkActive="active" [routerLink]="['/dashboard/informacion']" *ngIf="showTableroPrincipal">
+                <mat-icon>electric_bolt</mat-icon>
+                <span>Banco de energía</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+    
+            <a routerLinkActive="active" [routerLink]="['/dashboard']" *ngIf="showTableroPrincipal">
+                <mat-icon>bar_chart</mat-icon>
+                <span>Tablero principal</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+    
+            <a routerLinkActive="active" [routerLink]="['/dashboard/todos-generadores']" *ngIf="showTableroPrincipal">
+                <mat-icon>pin_drop</mat-icon>
+                <span>Georeferenciación</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+    
+            <a routerLinkActive="active" [routerLink]="['/dashboard/transacciones']" *ngIf="showTableroPrincipal">
+                <mat-icon>payment</mat-icon>
+                <span>Transacciones</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
+        </div>
+    
+    </div>
+</div>

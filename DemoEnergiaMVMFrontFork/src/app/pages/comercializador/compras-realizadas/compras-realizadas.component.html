@@ -1,0 +1,33 @@
+<div class="container">
+    <h2 class="mt-20">{{title}}</h2>
+    <mat-card class="custom mb-20" *ngFor="let compra of comprasRealizadas">
+        <mat-card-title>Empresa: {{compra.empresaCliente}}</mat-card-title>
+        <mat-card-subtitle>Fecha Compra: {{compra.fechaAprobacion}}</mat-card-subtitle>
+        <mat-card-content>
+            <p>
+                Generador de enegia: {{compra.empresaGerador}}
+            </p>
+            <p>
+                Direccion del Generador: {{compra.dirContratoGerador}}
+            </p>
+            <p>
+                Planta de energia : {{compra.nombrePlanta}}
+            </p>
+            <p>
+                Direccion de la Planta: {{compra.dirPlanta}}
+            </p>
+            <p>
+                Comercializador: {{compra.empresaComercializador}}
+            </p>
+            <p>
+                Tipo de energia: {{compra.tipoEnergia}}
+            </p>
+            <p>
+                Cantidad de energia: {{compra.cantidadEnergia}}
+            </p>
+        </mat-card-content>
+        <mat-card-actions>
+            <button class="button-mvm" mat-stroked-button (click)="verCertificado(compra)">Ver Certificado</button>
+        </mat-card-actions>
+    </mat-card>
+</div>

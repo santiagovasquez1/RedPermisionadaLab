@@ -1,0 +1,42 @@
+<div class="container" *ngIf="infoRegulador">
+    <div class="titulo">
+        <span class="title-xg">Información del administrador</span>
+    </div>
+    <div class="container-cards">
+        <div class="caja1 box">
+            <img src="../../../assets/images/nombre_token.svg" alt="">
+            <span class="text-green-16 text-start w-700">Nombre del token</span>
+            <span class="text-content-card text-start">{{infoRegulador.nombreToken}}</span>
+        </div>
+        <div class="caja3 box">
+            <img src="../../../assets/images/tokens_disponibles.svg" alt="">
+            <span class="text-green-16 text-start w-700">Tokens Disponibles</span>
+            <span class="text-content-card text-start">{{infoRegulador.cantidadTokens}}</span>
+        </div>
+        <div class="caja2 box">
+            <img src="../../../assets/images/mvm_coin.svg" alt="">
+            <span class="text-green-16 text-start w-700">Simbolo del token</span>
+            <span class="text-content-card text-start">{{infoRegulador.simboloToken}}</span>
+        </div>
+         
+        <div class="caja4 box">
+            <img src="../../../assets/images/ether.svg" alt="">
+            <span class="text-green-16 text-start w-700">Precio del token</span>
+            <span class="text-content-card text-start">{{infoRegulador.valorToken}} ethers</span>
+        </div>
+    </div>
+
+    <div class="info-contrato" *ngIf="showInfoContratos">
+        <p id="owner">Dueño del contrato: {{infoRegulador.owner}}</p>
+        <p id="direccion">Dirección del contrato: {{infoRegulador.dirContrato}}</p>
+    </div>
+
+    <div class="container-buttons">
+        <button class="button-mvm-white btn-show-info" mat-button (click)="showInfo()">
+            <mat-icon *ngIf="!showInfoContratos">visibility_off</mat-icon>
+            <mat-icon *ngIf="showInfoContratos">visibility</mat-icon>
+            Información del contrato
+        </button>
+        <button class="button-mvm" mat-button (click)="onInyectarTokens()">Inyectar tokens</button>
+    </div>
+</div>

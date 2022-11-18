@@ -1,0 +1,78 @@
+<div class="container container-agente">
+    <div class="mt-30">
+        <span class="title-xg">Información del comercializador</span>
+    </div>
+    <div class="container-info">
+        <div class="title-info">
+            <span class="title">{{infoCliente.empresa}}</span>
+            <span class="text-gris-p">Nit: {{infoCliente.nit}}</span>  
+        </div>
+        <div class="informacion">
+            <div class="hr">
+                <hr>
+            </div>
+            <div class="info-item">
+                <span class="text-black-p fw-600">Dueño del contrato:</span>
+                <span class="text-black-p">{{infoCliente.owner}}</span>
+            </div>
+            <div class="info-item">
+                <span class="text-black-p fw-600">Departamento:</span>
+                <span class="text-black-p">{{infoCliente.departamento}}</span>
+            </div>
+            <div class="info-item">
+                <span class="text-black-p fw-600">Ciudad:</span>
+                <span class="text-black-p">{{infoCliente.ciudad}}</span>
+            </div>
+            <div class="info-item">
+                <span class="text-black-p fw-600">Dirección:</span>
+                <span class="text-black-p">{{infoCliente.direccion}}</span>
+            </div>
+            <div class="info-item">
+                <span class="text-black-p fw-600">Telefono:</span>
+                <span class="text-black-p">{{infoCliente.telefono}}</span>
+            </div>
+            <div class="hr">
+                <hr>
+            </div>
+        </div>
+        <div class="botones">
+        </div>
+    </div>
+</div>
+
+
+<!--
+<div class="container" *ngIf="infoCliente">
+    <div class="titulo">
+        <h2 class="title-xg">Información del comercializador</h2>
+    </div>
+    <mat-card class="custom mb-20 fadeIn">
+        <mat-card-title>Empresa: {{infoCliente.empresa}}</mat-card-title>
+        <mat-card-subtitle>Nit: {{infoCliente.nit}}</mat-card-subtitle>
+        <mat-card-content>
+            <p>
+                Dueño del contrato: {{infoCliente.owner}}
+            </p>
+            <p>
+                Contacto: {{infoCliente.contacto}}
+            </p>
+            <p>
+                Teléfono: {{infoCliente.telefono}}
+            </p>
+            <p>
+                Correo: {{infoCliente.correo}}
+            </p>
+            <p>
+                Departamento: {{infoCliente.departamento}}
+            </p>
+            <p>
+                Ciudad: {{infoCliente.ciudad}}
+            </p>
+            <p>
+                Dirección: {{infoCliente.direccion}}
+            </p>
+        </mat-card-content>
+    </mat-card>
+</div>
+
+-->

@@ -1,0 +1,59 @@
+<div class="container">
+    <div class="titulo">
+        <h2 class="title-xg">Agentes del mercado</h2>
+    </div>
+
+    <app-filter [rowsForm]="filterFormProperties" (onfieldValueChange)="onfieldValueChange($event)"></app-filter>
+
+    <div class="table-container mt-30 fadeIn">
+        <mat-table #table [dataSource]="dataSource" class="mvm-table">
+
+            <ng-container matColumnDef="empresa">
+                <mat-header-cell *matHeaderCellDef>Empresa</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.infoContrato.empresa}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="contacto">
+                <mat-header-cell *matHeaderCellDef>Contacto</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.infoContrato.contacto}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ubicacion">
+                <mat-header-cell *matHeaderCellDef>ubicación</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.infoContrato.ciudad}} {{element.infoContrato.departamento}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="correo">
+                <mat-header-cell *matHeaderCellDef>Correo</mat-header-cell>
+                <mat-cell *matCellDef="let element" [matTooltip]="element.infoContrato.correo">{{element.infoContrato.correo | limitText:15}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="tipoAgente">
+                <mat-header-cell *matHeaderCellDef>Tipo de agente</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.tipoContrato | tipoContrato}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="estado">
+                <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span [ngClass]="{'approve-text': element.estadoSolicitud==0, 'reject-text:': element.estadoSolicitud==1}">
+                        {{element.estadoSolicitud | estadoRegistro}}
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+                <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+                <mat-cell *matCellDef="let element; let index = index">
+                    <button matRipple class="mvm-action-button approve" (click)="onApprove(index,element)" [disabled]="element.estadoSolicitud == 0 || element.estadoSolicitud == 1" matTooltip="Aceptar solicitud">
+                        <mat-icon>done</mat-icon>
+                    </button>
+                    <button matRipple class="mvm-action-button reject" (click)="onReject(index,element.infoContrato)" [disabled]="element.estadoSolicitud == 0 || element.estadoSolicitud == 1" matTooltip="Rechazar solicitud">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row class="fadeIn" *matHeaderRowDef="displayedColumns; sticky: true "></mat-header-row>
+            <mat-row *matRowDef="let row; columns:displayedColumns "></mat-row>
+        </mat-table>
+    </div>
+
+    <div class="table-container mt-10 fadeIn ">
+        <mat-paginator class="mvm-paginator " #paginator [pageSizeOptions]="[5,10, 25, 100 ] " showFirstLastButtons></mat-paginator>
+    </div>
+</div>

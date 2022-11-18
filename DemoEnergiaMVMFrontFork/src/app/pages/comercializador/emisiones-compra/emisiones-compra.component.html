@@ -1,0 +1,59 @@
+<div class="container">
+
+    <div class="titulo">
+        <h2 class="title-xg">Información Compras</h2>
+    </div>
+
+    <app-filter *ngIf="filterFormProperties.length>0" [rowsForm]="filterFormProperties" (onfieldValueChange)="onfieldValueChange($event)"></app-filter>
+
+    <div class="table-container mt-30 fadeIn">
+        <mat-table #table [dataSource]="dataSource" class="mvm-table">
+            <ng-container matColumnDef="empresaCliente">
+                <mat-header-cell *matHeaderCellDef>Empresa</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.empresaCliente}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fechaEmision">
+                <mat-header-cell *matHeaderCellDef>Fecha de solicitud</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.fechaEmision}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fechaAprobacion">
+                <mat-header-cell *matHeaderCellDef>Fecha de aprobación</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <span *ngIf="element.estado == 0"></span>
+                    <span *ngIf="element.estado == 1">{{element.fechaAprobacion}}</span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="tipoEnergia">
+                <mat-header-cell *matHeaderCellDef>Tipo de energia</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.tipoEnergia}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="cantidadEnergia">
+                <mat-header-cell *matHeaderCellDef>Cantidad de energia</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidadDeEnergia}} MWh</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="estado">
+                <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.estado|estadoCompra}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="acciones">
+                <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                    <button matRipple class="mvm-action-button approve" [disabled]="element.estado == 1" (click)="onRealizarCompra(element,element.index)">
+                        <mat-icon>done</mat-icon>
+                    </button>
+                    <button matRipple class="mvm-action-button reject" [disabled]="element.estado == 1" (click)="onRechazarCompra(element.ownerCliente,element.index)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row class="fadeIn" *matRowDef="let row; columns:displayedColumns"></mat-row>
+        </mat-table>
+    </div>
+
+    <div class="table-container mt-10 fadeIn">
+        <mat-paginator class="mvm-paginator" #paginator [pageSizeOptions]="[5,10, 25, 100 ]" showFirstLastButtons></mat-paginator>
+    </div>
+
+</div>

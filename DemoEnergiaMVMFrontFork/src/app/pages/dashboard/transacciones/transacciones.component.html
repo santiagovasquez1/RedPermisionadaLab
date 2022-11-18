@@ -1,0 +1,101 @@
+<div class="container">
+    <div class="titulo">
+        <h2 class="title-xg">Transacciones del mercado</h2>
+    </div>
+
+    <form [formGroup]="filterForm" class="filter-form fadeIn">
+        <h3>Filtros</h3>
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Tipo de transacción</label>
+                    <select class="custom-select" formControlName="tipoTx">
+                        <option [value]=""></option>
+                        <option *ngFor="let tipoTx of tiposTransaccion" [value]="tipoTx">{{tipoTx|tipoTransaccion}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field">
+                    <label>Fecha de transacción</label>
+                    <!-- <input type="text" formControlName="fechaTx" [matDatepicker]="picker" (click)="picker.open()">
+                    <mat-datepicker #picker></mat-datepicker> -->
+                    <input type="date" formControlName="fechaTx">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field">
+                    <label>Tipo de Energía</label>
+                    <select class="custom-select" formControlName="tipoEnergia">
+                        <option [value]=""></option>
+                        <option *ngFor="let tipoEnergia of tiposEnergia" [value]="tipoEnergia.nombre">{{tipoEnergia.nombre}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field ">
+                    <label>Agente de origen</label>
+                    <select class="custom-select" formControlName="agenteOrigen">
+                        <option [value]=""></option>
+                        <option *ngFor="let agenteOrigen of agentesRegistrados" [value]="agenteOrigen.empresa">{{agenteOrigen.empresa}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-field ">
+                    <label>Agente de destino</label>
+                    <select class="custom-select" formControlName="agenteDestino">
+                        <option [value]=""></option>
+                        <option *ngFor="let agenteOrigen of agentesRegistrados" [value]="agenteOrigen.empresa">{{agenteOrigen.empresa}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+    </form>
+
+    <div class="table-container mt-30 fadeIn">
+        <mat-table #table [dataSource]="dataSource" class="mvm-table">
+
+            <ng-container matColumnDef="Transaccion">
+                <mat-header-cell *matHeaderCellDef>Tipo de transacción</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.tipoTx | tipoTransaccion}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="Fecha">
+                <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.fechaTx}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="TipoEnergia">
+                <mat-header-cell *matHeaderCellDef>Tipo de Energía</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.tipoEnergia}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="CantidadEnergia">
+                <mat-header-cell *matHeaderCellDef>Cantidad</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidadEnergia}} MWh</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="AgenteOrigen">
+                <mat-header-cell *matHeaderCellDef>Agente de origen</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.nombreAgenteOrigen}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="AgenteDestino">
+                <mat-header-cell *matHeaderCellDef>Agente de destino</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.nombreAgenteDestino}}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row class="fadeIn" *matRowDef="let row; columns:displayedColumns"></mat-row>
+        </mat-table>
+    </div>
+    <div class="table-container mt-10 fadeIn">
+        <mat-paginator class="mvm-paginator" #paginator [pageSizeOptions]="[5,10, 25, 100 ]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>

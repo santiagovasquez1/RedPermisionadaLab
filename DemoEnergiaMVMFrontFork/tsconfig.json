@@ -1,0 +1,67 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "es2020",
+    "module": "es2020",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "paths": {
+      "crypto": [
+        "./node_modules/crypto-browserify"
+      ],
+      "stream": [
+        "./node_modules/stream-browserify"
+      ],
+      "assert": [
+        "./node_modules/assert"
+      ],
+      "http": [
+        "./node_modules/stream-http"
+      ],
+      "https": [
+        "./node_modules/https-browserify"
+      ],
+      "process": [
+        "./node_modules/process/browser"
+      ],
+      "url": [
+        "./node_modules/url"
+      ],
+      "os": [
+        "./node_modules/os-browserify"
+      ]
+    },
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+  },
+  "angularCompilerOptions": {
+    "types": [
+      "node"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "noImplicitAny": false,
+    "strictTemplates": true,
+    "strictNullChecks": false,
+  }
+}

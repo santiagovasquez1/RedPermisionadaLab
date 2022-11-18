@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="titulo">
+        <div class="h2 title-xg">Lista de clientes</div>
+    </div>
+
+    <app-filter [rowsForm]="filterFormProperties" (onfieldValueChange)="onfieldValueChange($event)"></app-filter>
+
+    <div class="table-container mt-30 fadeIn">
+        <mat-table #table [dataSource]="dataSource" class="mvm-table">
+            <ng-container matColumnDef="empresa">
+                <mat-header-cell *matHeaderCellDef>Empresa</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.empresa}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="contacto">
+                <mat-header-cell *matHeaderCellDef>Contacto</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.contacto}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="ubicacion">
+                <mat-header-cell *matHeaderCellDef>Ubicación</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.ciudad}} {{element.departamento}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="correo">
+                <mat-header-cell *matHeaderCellDef>Correo</mat-header-cell>
+                <mat-cell *matCellDef="let element" [matTooltip]="element.correo">{{element.correo | limitText:15}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="tokens">
+                <mat-header-cell *matHeaderCellDef>Tokens delegados</mat-header-cell>
+                <mat-cell *matCellDef="let element; let index=index">{{tokensDelegados[index]}}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+            <mat-row class="fadeIn" *matRowDef="let row; columns:displayedColumns"></mat-row>
+        </mat-table>
+    </div>
+
+    <div class="table-container mt-10 fadeIn">
+        <mat-paginator class="mvm-paginator" #paginator [pageSizeOptions]="[5,10, 25, 100 ]" showFirstLastButtons></mat-paginator>
+    </div>
+</div>

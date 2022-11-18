@@ -1,0 +1,116 @@
+{
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+    "cli": {
+        "analytics": "26e0c38c-e82f-41f3-8389-d00053ba7dab"
+    },
+    "version": 1,
+    "newProjectRoot": "projects",
+    "projects": {
+        "DemoEnergiaMVM": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:application": {
+                    "strict": true
+                }
+            },
+            "root": "",
+            "sourceRoot": "src",
+            "prefix": "app",
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "allowedCommonJsDependencies": [
+                            "rxjs-compat"
+                        ],
+                        "outputPath": "dist/demo-energia-mvm",
+                        "index": "src/index.html",
+                        "main": "src/main.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "tsconfig.app.json",
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets"
+                        ],
+                        "styles": [
+                            "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                            "src/styles.css",
+                            "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+                            "node_modules/bootstrap/dist/css/bootstrap.css",
+                            "node_modules/ngx-toastr/toastr.css"
+                        ],
+                        "scripts": [
+                            "node_modules/bootstrap/dist/js/bootstrap.js",
+                            "node_modules/jquery/dist/jquery.js"
+                        ]
+                    },
+                    "configurations": {
+                        "production": {
+                            "budgets": [{
+                                    "type": "initial",
+                                    "maximumWarning": "10mb",
+                                    "maximumError": "10mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "fileReplacements": [{
+                                "replace": "src/environments/environment.ts",
+                                "with": "src/environments/environment.prod.ts"
+                            }],
+                            "outputHashing": "all"
+                        },
+                        "development": {
+                            "buildOptimizer": false,
+                            "optimization": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "production": {
+                            "browserTarget": "DemoEnergiaMVM:build:production"
+                        },
+                        "development": {
+                            "browserTarget": "DemoEnergiaMVM:build:development"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "browserTarget": "DemoEnergiaMVM:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "main": "src/test.ts",
+                        "polyfills": "src/polyfills.ts",
+                        "tsConfig": "tsconfig.spec.json",
+                        "karmaConfig": "karma.conf.js",
+                        "assets": [
+                            "src/favicon.ico",
+                            "src/assets"
+                        ],
+                        "styles": [
+                            "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+                            "src/styles.css"
+                        ],
+                        "scripts": []
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="titulo">
+        <h2 class="title-xg">Lista de compras</h2>
+    </div>
+
+    <app-filter *ngIf="filterFormProperties.length>0" [rowsForm]="filterFormProperties" (onfieldValueChange)="onfieldValueChange($event)"></app-filter>
+
+    <div class="actions-container justify-content-between fadeIn mt-30" *ngIf="infoCliente">
+        <div class="contratar-agente">
+            <div class="info">
+                <p class="label">Comercializador</p>
+                <p class="data">{{nombreComercializador}}</p>
+            </div>
+            <button class="cancel-button-mvm w-120-px" (click)="onContratar()">
+                <img src="../../../../assets/images/contratar-green.svg" alt="contratar">
+                Contratar
+            </button >
+        </div>
+        <button class="button-mvm w-160" mat-ripple (click)="onSolicitarCompra()">Solicitar compra</button>
+        </div>
+
+        <div class="table-container mt-20 fadeIn">
+            <mat-table #table [dataSource]="dataSource" class="mvm-table">
+
+                <ng-container matColumnDef="id">
+                    <mat-header-cell *matHeaderCellDef>Id</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.index}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="comercializador">
+                    <mat-header-cell *matHeaderCellDef>Comercializador</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.empresaComercializador}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="cantidad" class="mvm-column-widht-100">
+                    <mat-header-cell *matHeaderCellDef>Cantidad MWh</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.cantidadEnergia}} MWh</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="tecnologia">
+                    <mat-header-cell *matHeaderCellDef>Tecnología</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.tipoEnergia}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="fechaCompra">
+                    <mat-header-cell *matHeaderCellDef>Fecha de compra</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.fechaAprobacion}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="valorCompra">
+                    <mat-header-cell *matHeaderCellDef>Valor compra (Erc-mvm)</mat-header-cell>
+                    <mat-cell *matCellDef="let element"></mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="generador">
+                    <mat-header-cell *matHeaderCellDef>Generador</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.empresaGerador}}</mat-cell>
+                </ng-container>
+                <ng-container matColumnDef="planta">
+                    <mat-header-cell *matHeaderCellDef>Planta</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.nombrePlanta}}</mat-cell>
+                </ng-container>
+                <!-- <ng-container matColumnDef="certificado">
+                    <mat-header-cell *matHeaderCellDef>Ver certificado</mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                        <span class="info-certificado" (click)="verCertificado(element)">Certificado</span>
+                    </mat-cell>
+                </ng-container> -->
+
+                <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                <mat-row class="fadeIn" *matRowDef="let row; columns:displayedColumns"></mat-row>
+            </mat-table>
+        </div>
+
+        <div class="table-container mt-10 fadeIn">
+            <mat-paginator class="mvm-paginator" #paginator [pageSizeOptions]="[5,10, 25, 100 ]" showFirstLastButtons></mat-paginator>
+        </div>
+    </div>

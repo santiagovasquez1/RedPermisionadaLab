@@ -1,0 +1,72 @@
+
+
+<div class="container container-banco-informacion" *ngIf="energiasDisponibles.length>0">
+
+    <div class="mt-30 title">
+        <span class="title-xg">Banco de energía</span>
+    </div>
+    
+    <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                                (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+                <mat-panel-title class="text-gris-p">
+                    <img src="../../../../assets/images/tipoEnergia.svg" alt="" class="mr-10">
+                    Tipo de energía
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+    
+            <div class="buttons-acordeon text-gris-p">
+                <a class="text-gris-p" (click)="changeBanco('Banco')">Energía en bolsa</a>
+                <a class="text-gris-p" (click)="changeBanco('Contratos')" >Energía en contratos</a>
+            </div>
+            
+        </mat-expansion-panel>
+    </mat-accordion>
+
+    <div class="container-fijar-precios">
+        <button class="button-mvm" mat-button (click)="onFijarPrecios()">Fijar precios de energía</button>
+        
+    </div>
+
+
+    <div class="card-banco card-solar fadeIn">
+
+        <div class="flex-column">
+            <label class="color-gris">Cantidad de energía disponible</label>
+            <span class="title-xg-gris">{{energiasDisponibles[0].cantidadEnergia}} <b>MWh</b></span>
+        </div>
+
+        <div class="header-card">
+            <div class="flex-alg-center">
+                <img class="fadeIn mr-20" src="../../../../assets/images/Solar.svg" alt="">
+                <span class="title">Solar</span>
+            </div>
+            <span class="fw-500 color-gris">Precio</span>
+            <div class="input-text div-text">
+                <span>{{energiasDisponibles[0].precio}} <b>Tokens/MWh</b></span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card-banco card-eolica fadeIn">
+        <div class="flex-column">
+            <label class="color-gris">Cantidad de energía disponible</label>
+            <span class="title-xg-gris">{{energiasDisponibles[1].cantidadEnergia}} <b>MWh</b></span>
+        </div>
+
+        <div class="header-card">
+            <div class="flex-alg-center">
+                <img class="fadeIn mr-20" src="../../../../assets/images/energia eolica.svg" alt="">
+                <span class="title">Eólica</span>
+            </div>
+            <span class="fw-500 color-gris">Precio</span>
+            <div class="input-text div-text">
+                <span>{{energiasDisponibles[1].precio}} <b>Tokens/MWh</b></span>
+            </div>
+        </div>
+
+    </div>
+</div>

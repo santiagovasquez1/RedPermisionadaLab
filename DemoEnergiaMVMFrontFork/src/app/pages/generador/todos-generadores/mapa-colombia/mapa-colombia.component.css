@@ -1,0 +1,23 @@
+
+
+.container{
+    width:100%;
+    height:100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+svg {
+    width: 1200px;
+    height: 1250px;
+    zoom: 0.3;
+    fill: #b1b1b1;
+    stroke: #fff;
+    stroke-width: 2px;
+}
+
+.container svg :hover{
+    fill: var(--verde-claro);
+    cursor: pointer;
+}

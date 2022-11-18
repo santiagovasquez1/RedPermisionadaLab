@@ -1,0 +1,41 @@
+<div mat-dialog-content>
+    <div class="dialgo-close-brand">
+        <img src="../../../assets/images/cerrar.svg" alt="cerrar" (click)="dialogRef.close()">
+    </div>
+    <div class="modal-header-mvm">
+        <img src="../../../../assets/images/Energia-green.svg" alt="energia">
+        <h2 class="modal-title-mvm mt-20">Consumir energia</h2>
+    </div>
+    <form [formGroup]="consumoForm">
+        <div class="row">
+            <div class="col">
+                <div class="form-field">
+                    <label>Tipo de energia</label>
+                    <select class="custom-select" formControlName="energia">
+                        <option [ngValue]=""></option>
+                        <option *ngFor="let energia of energiasDisponibles" [ngValue]="energia">{{energia}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Cantidad de energia disponible (MWh)</label>
+                    <input type="number" formControlName="cantidadDisponible"></div>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Cantiad de energia a consumir (MWh)</label>
+                    <input type="number" formControlName="cantidad">
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center flex-row-reverse mt-20">
+            <button class="button-mvm w-160" mat-raised-button (click)="onConsumirEnergia()" [disabled]="!isValid"> Consumir energia</button>
+            <button class="cancel-button-mvm w-160 mr-30" mat-ripple (click)="dialogRef.close()">Cancelar</button>
+        </div>
+    </form>
+</div>

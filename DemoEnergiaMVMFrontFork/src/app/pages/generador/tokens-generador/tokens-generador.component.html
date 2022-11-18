@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="titulo">
+        <h2 class="title-xg">Tokens</h2>
+    </div>
+
+    <div class="tokens-generador fadeIn">
+        <img src="../../../../assets/images/tokensGenerador.png" alt="tokens-generador">
+        <div class="info-tokens">
+            <p class="label">Tokens Disponibles</p>
+            <p class="cantidad">{{tokensGenerador}}</p>
+        </div>
+        <div class="equivalencia">
+            <div class="label">
+                <img src="../../../../assets/images/Cobrar.svg" alt="cobrar">
+                <p>Esto equivale en COP</p>
+            </div>
+            <p class="cantidad">{{tokensEnPesos|currency}}</p>
+            <div class="flex-alg-center">
+                <button class="button-mvm mt-40 w-200px" mat-ripple [disabled]="!isCobrarValid" (click)="onCobrarTokens()">Cobrar</button>
+                <button class="button-mvm mt-40 w-200px ml-10" mat-ripple (click)="onComprarTokens()">Comprar tokens</button>
+            </div>
+            
+        </div>
+    </div>
+</div>

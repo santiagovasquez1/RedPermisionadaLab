@@ -1,0 +1,93 @@
+<div mat-dialog-content>
+    <div class="dialgo-close-brand">
+        <img src="../../../assets/images/cerrar.svg" alt="cerrar" (click)="dialogRef.close()">
+    </div>
+    <div class="modal-header-mvm">
+        <img src="../../../../assets/images/carbon_energy-renewable-green.svg" alt="planta">
+        <h2 class="modal-title-mvm mt-20">{{title}}</h2>
+    </div>
+
+    <form [formGroup]="plantaEnergiaForm">
+
+        <div class="row">
+            <div class="col">
+                <div class="form-field">
+                    <label>Nombre de la planta:</label>
+                    <input formControlName="nombre" type="text" autocomplete="off">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field">
+                    <label>Departamento:</label>
+                    <select class="custom-select" formControlName="departamento">
+                        <option [value]=""></option>
+                        <option  *ngFor="let departamento of departamentos" [value]="departamento">
+                            {{departamento}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Ciudad:</label>
+                    <select class="custom-select" formControlName="ciudad">
+                        <option [value]=""></option>
+                        <option *ngFor="let ciudad of municipiosDepartamento" [value]="ciudad">
+                            {{ciudad}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field">
+                    <label>Coordenadas:</label>
+                    <input formControlName="coordenadas" type="text" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Tecnología:</label>
+                    <select class="custom-select" formControlName="tipoEnergia">
+                        <option [value]=""></option>
+                        <option *ngFor="let energia of energiasDisponibles" [value]="energia">
+                            {{energia}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field">
+                    <label>Tasa de emisión (Mwh):</label>
+                    <input formControlName="tasaEmision" type="number" autocomplete="off">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Capacidad Nominal (Mwh)</label>
+                    <input formControlName="capacidadNominal" type="number" autocomplete="off">
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field">
+                    <label>Estado de la planta</label>
+                    <select class="custom-select" formControlName="estado">
+                        <option [value]=""></option>
+                        <option value="0">Activo</option>
+                        <option value="1">Inactivo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center flex-row-reverse mt-20">
+            <button class="button-mvm w-160" mat-ripple (click)="onCreatePlantaEnergia()" [disabled]="!plantaEnergiaForm.valid">Crear planta</button>
+            <button class="cancel-button-mvm w-160 mr-30" mat-ripple (click)="dialogRef.close()">Cancelar</button>
+        </div>
+    </form>
+</div>

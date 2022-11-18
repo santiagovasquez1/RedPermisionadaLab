@@ -1,0 +1,19 @@
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 65px);
+    width: auto;
+    
+}
+
+.login{
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+
+}
+
+.input{
+    width: 300px;
+}

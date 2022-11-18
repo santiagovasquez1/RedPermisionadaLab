@@ -1,0 +1,146 @@
+<div class="registro-container">
+    <header class="registro-header">
+        <img src="../../../assets/images/logo_plataforma.png" alt="logo-app">
+        <h2 class="registro-title">Registro agente del mercado</h2>
+    </header>
+    <form class="register-form fadeIn" [formGroup]="registroForm">
+        <div class="row">
+            <div class="col">
+                <div class="form-field">
+                    <label class="form-label">Seleccione el tipo de agente</label>
+                    <select class="custom-select" formControlName="tipoAgente">
+                        <option [value]=""></option>
+                        <option *ngFor="let agente of agentesMercado" [value]="agente.id">{{agente.tipo}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+
+            </div>
+
+        </div>
+
+        <div class="row mt-30">
+            <div class="col">
+                <div class="form-field ">
+                    <label class="form-label">NIT</label>
+                    <input type="text" formControlName="nit">
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-field ">
+                    <label class="form-label">Empresa</label>
+                    <input type="text" formControlName="empresa">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row mt-30">
+            <div class="col">
+                <div class="form-field ">
+                    <label for="" class="form-label">Contacto</label>
+                    <input type="text" formControlName="contacto">
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-field ">
+                    <label for="" class="form-label">Teléfono</label>
+                    <input type="text" formControlName="telefono">
+                </div>
+            </div>
+
+        </div>
+        <div class="row mt-30">
+            <div class="col">
+                <div class="form-field ">
+                    <label class="form-label" for="">Correo</label>
+                    <input type="email" formControlName="correo">
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="form-field ">
+                    <label class="form-label" for="">Departamento</label>
+                    <select class="custom-select" formControlName="departamento">
+                        <option [value]=""></option>
+                        <option *ngFor="let departamento of departamentos" [value]="departamento">{{departamento}}</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mt-30">
+            <div class="col">
+                <div class="form-field ">
+                    <label for="" class="form-label">Ciudad</label>
+                    <select class="custom-select" formControlName="ciudad">
+                        <option [value]=""></option>
+                        <option *ngFor="let ciudad of municipiosDepartamento" [value]="ciudad">{{ciudad}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-field ">
+                    <label for="" class="form-label">Dirección</label>
+                    <input type="text" formControlName="direccion">
+                </div>
+            </div>
+        </div>
+        <div class="row mt-30 fadeIn" *ngIf="agenteMercado==1">
+            <div class="col">
+                <div class="form-field ">
+                    <label for="" class="form-label">Tipo de comercializador</label>
+                    <select class="custom-select" formControlName="tipoComercio">
+                        <option [value]=""></option>
+                        <option [value]="tipoComercio.id" *ngFor="let tipoComercio of tiposCoComercializador">{{tipoComercio.tipo}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+
+        <div class="row mt-30 ">
+            <div class="col text-danger">
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'tipoAgente')">
+                    El tipo de agente es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'nit')">
+                    El nit de la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'empresa')">
+                    El nombre de la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'contacto')">
+                    El contacto de la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'telefono')">
+                    El telefono de la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'correo')">
+                    El correo de la empresa es obligatorio ó no es un tipo de correo valido
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'departamento')">
+                    El departamento donde se encuentra la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'ciudad')">
+                    La ciudad donde se encuentra la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="formfieldValidator.fieldValidator(registroForm,'direccion')">
+                    la dirección de la empresa es obligatorio
+                </p>
+                <p class="fadeIn" *ngIf="agenteMercado==1 && formfieldValidator.fieldValidator(registroForm,'tipoComercio')">
+                    El tipo de comercializador es obligatorio
+                </p>
+            </div>
+        </div>
+
+        <div class="form-actions-row mt-30">
+            <div class="form-field w-160">
+                <button class="button-mvm" mat-stroked-button (click)="onSubmit()" [disabled]="!registroForm.valid">Registrarme</button>
+            </div>
+        </div>
+    </form>
+</div>

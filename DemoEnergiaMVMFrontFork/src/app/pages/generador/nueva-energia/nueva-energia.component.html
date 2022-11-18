@@ -1,0 +1,35 @@
+<div mat-dialog-content>
+    <div class="dialgo-close-brand">
+        <img src="../../../assets/images/cerrar.svg" alt="cerrar" (click)="dialogRef.close()">
+    </div>
+    <div class="modal-header-mvm">
+        <img src="../../../../assets/images/Energia-green.svg" alt="energia">
+        <h2 class="modal-title-mvm mt-20">{{title}}</h2>
+    </div>
+
+    <form [formGroup]="nuevaEnergiaForm">
+        <div class="row">
+            <div class="col">
+                <div class="form-field">
+                    <label>Nombre energía</label>
+                    <input type="text" formControlName="nombreEnergia">
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-20">
+            <div class="col">
+                <div class="form-field">
+                    <label>Cantidad de energía (MWh)</label>
+                    <input formControlName="cantidadEnergia" type="number" autocomplete="off">
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center flex-row-reverse mt-20">
+            <button class="button-mvm w-100-px" mat-ripple (click)="onCrearNuevaEnergia()" [disabled]="!isValid" *ngIf="estado == 0">Inyectar</button>
+            <button class="button-mvm w-100-px" mat-ripple (click)="onInyectarEnergia()" [disabled]="!isValid" *ngIf="estado == 1">Inyectar</button>
+            <button class="cancel-button-mvm w-100-px mr-30" mat-ripple (click)="onCancelar()">Cancelar</button>
+        </div>
+    </form>
+</div>

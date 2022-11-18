@@ -1,0 +1,21 @@
+<h1>GENERADORES DISPONIBLES</h1>
+
+<div class="container">
+    <mat-card class="example-card" *ngFor="let generador of generadores; let i = index">
+        <mat-card-content>
+          <h2><span style="color:#3F51B5">Nombre:</span> {{generador}} </h2>
+          <h3><span style="color:#3F51B5"> Dirección del generador:</span> {{dirGeneradores[i]}}</h3>
+          <h3><span style="color:#3F51B5"> Dirección del contrato: </span> {{dirContratos[i]}}</h3>
+          <h3 style="color:#3F51B5">Tipos de energía</h3>
+          <ul>
+            <li>Energía solar</li>
+            <li>Energía eólica</li>
+          </ul>
+        </mat-card-content>
+        <mat-card-actions>
+          <button class="button-mvm" mat-stroked-button (click)="openDialog()">Generar nueva energía</button>
+          <button class="button-mvm" mat-stroked-button>Inyectar energía</button>
+        </mat-card-actions>
+    </mat-card>
+</div>
+

@@ -1,0 +1,51 @@
+<div mat-dialog-content>
+    <div class="dialgo-close-brand">
+        <img src="../../../assets/images/cerrar.svg" alt="cerrar" (click)="dialogRef.close()">
+    </div>
+    <div class="certificado-container">
+        <div class="header-certificado">
+            <img src="../../../assets/images/certificado.svg" alt="certificado">
+            <h2>Certificado de compra de energía</h2>
+        </div>
+        <div class="info">
+            <div class="column">
+                <div class="field">
+                    <p class="label">Nombre del cliente</p>
+                    <p class="text">{{infoCertificadoCompra.empresaCliente}}</p>
+                </div>
+                <div class="field">
+                    <p class="label">Generador</p>
+                    <p class="text">{{infoCertificadoCompra.empresaGenerador}}</p>
+                </div>
+                <div class="field">
+                    <p class="label">Planta</p>
+                    <p class="text">{{infoCertificadoCompra.nombrePlanta}}</p>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="field">
+                    <p class="label">Tecnología</p>
+                    <p class="text">{{infoCertificadoCompra.tipoEnergia}}</p>
+                </div>
+                <div class="field">
+                    <p class="label">Cantidad</p>
+                    <p class="text">{{infoCertificadoCompra.cantidadEnergia}} MWh</p>
+                </div>
+                <div class="field">
+                    <p class="label">Hash</p>
+                    <p class="text">{{infoCertificadoCompra.hashCertificado|limitText:40}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="certificador">
+            <img src="../../../assets/images/logoMVM.png" alt="logoMVM">
+            <div class="fecha">
+                <p class="label">Fecha</p>
+                <p class="text">{{infoCertificadoCompra.fechaCertificado}}</p>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,54 @@
+<div class="container-toolbar">
+    <mat-toolbar class="toolbar">
+        <span class="title fw-600">Blockchain MVM</span>
+        <div class="spacer"></div>
+
+        <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==3">
+            <mat-icon class="cursor-unset">person_pin</mat-icon>
+            Administrador
+        </a>
+
+        <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==2">
+            <mat-icon class="cursor-unset">person_pin</mat-icon>
+            Generador</a>
+
+        <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==1">
+            <mat-icon class="cursor-unset">person_pin</mat-icon>
+            Comercializador</a>
+
+        <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==0">
+            <mat-icon class="cursor-unset">person_pin</mat-icon>
+            Cliente</a>
+        <!--
+        <button mat-button [matMenuTriggerFor]="beforeMenu" *ngIf="tipoContrato==0">
+            <mat-icon>person_pin</mat-icon>
+            Cliente</button>
+        
+        <mat-menu #beforeMenu="matMenu" xPosition="before">
+            <button mat-menu-item>Item 1</button>
+            <button mat-menu-item>Item 2</button>
+        </mat-menu>
+        -->
+
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <div class="container-mat-menu">
+                <span class="fw-700">Perfil</span>
+                <span *ngIf="tipoContrato==0">Cliente</span>
+                <span *ngIf="tipoContrato==1">Comercializador</span>
+                <span *ngIf="tipoContrato==2">Generador</span>
+                <span *ngIf="tipoContrato==3">Administrador</span>
+                <hr>
+                <div class="buttons">
+                    <mat-icon class="a-green">edit</mat-icon>
+                    <span class="a-green">Editar perfil</span>
+                    <mat-icon class="a-green">logout</mat-icon>
+                    <span class="a-green">Salir</span>
+                </div>
+            </div>
+        </mat-menu>
+
+    </mat-toolbar>
+</div>

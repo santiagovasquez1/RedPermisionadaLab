@@ -1,0 +1,6 @@
+<h2 class="mt-20 color-green">Ingrese la cantidad de tokens:</h2>
+<mat-form-field class="w-100p">
+    <mat-label>Cantidad de tokens</mat-label>
+    <input matInput [(ngModel)]="cantidadTokens" type="number">
+</mat-form-field>
+<button class="button-mvm" mat-raised-button (click)="onInyectarTokens()" [disabled]="!isValid">Inyectar</button>

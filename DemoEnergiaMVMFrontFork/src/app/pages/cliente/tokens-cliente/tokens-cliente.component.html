@@ -1,0 +1,64 @@
+<div class="container">
+    <div class="titulo">
+        <h2 class="h2 title-xg">Tokens</h2>
+    </div>
+
+    <div class="tokens-cliente fadeIn">
+        <div class="row">
+            <div class="col">
+                <p class="tokens-text">Tokens Diponibles</p>
+                <p class="tokens-number">{{tokensCliente}}</p>
+                <div class="token-card mb-20">
+                    <div class="token-card-title">
+                        <img src="../../../../assets/images/intercambioToken.svg">
+                        <p>Cambiar a Ethers</p>
+                    </div>
+                    <div class="token-card-input-container">
+                        <p>Cantidad a cambiar</p>
+                        <input type="number" [(ngModel)]="tokensCambiar">
+                    </div>
+                    <div class="actions-container">
+                        <button class="button-mvm w-100-px" mat-ripple [disabled]="!isDevolverValid" (click)="onCambiar()">Cambiar</button>
+                    </div>
+                </div>
+                <p class="tokens-text">Cambiar tus tokens disponibles por Ethers para posteriormente enviarlos a tu cuenta empresarial asignada.</p>
+            </div>
+            <div class="col">
+                <p class="tokens-text">Tokens delegados</p>
+                <p class="tokens-number">{{tokensDelegados}}</p>
+                <div class="token-card mb-20">
+                    <div class="token-card-title">
+                        <img src="../../../../assets/images/tokens_disponibles.svg">
+                        <p>Delegar tokens</p>
+                    </div>
+                    <div class="token-card-input-container">
+                        <p>Delegar Tokens</p>
+                        <input type="number" [(ngModel)]="tokensDelegar">
+                    </div>
+                    <div class="actions-container">
+                        <button class="button-mvm w-100-px" mat-ripple [disabled]="!isDelegarValid" (click)="onDelegar()">Delegar</button>
+                    </div>
+                </div>
+                <p class="tokens-text">Envía tokens a tu comercializador para de esta manera comprar las cantidades de energía renovable que requieras.</p>
+            </div>
+            <div class="col">
+                <p class="tokens-text">Tokens totales</p>
+                <p class="tokens-number">{{tokensMercado}}</p>
+                <div class="token-card mb-20">
+                    <div class="token-card-title">
+                        <img src="../../../../assets/images/peso.svg">
+                        <p>Comprar tokens</p>
+                    </div>
+                    <div class="token-card-input-container">
+                        <p>Comprar Tokens</p>
+                        <input type="number" [(ngModel)]="tokensComprar">
+                    </div>
+                    <div class="actions-container">
+                        <button class="button-mvm w-100-px" mat-ripple [disabled]="!isComprarValid" (click)="onComprar()">Comprar</button>
+                    </div>
+                </div>
+                <p class="tokens-text">Compra tokens para aprovisionar tu billetera y poder realizar las transacciones que necesites.</p>
+            </div>
+        </div>
+    </div>
+</div>

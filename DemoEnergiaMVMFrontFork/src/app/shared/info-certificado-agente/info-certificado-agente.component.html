@@ -1,0 +1,50 @@
+<div *ngIf="infoCertificadoAgente">
+    <div class="dialgo-close-brand">
+        <img src="../../../assets/images/cerrar.svg" alt="cerrar" (click)="dialogRef.close()">
+    </div>
+    <div class="certificado-container">
+        <div class="header-certificado">
+            <div class="logo-mvm">
+                <img src="../../../assets/images/logoMVM.png" alt="logo-mvm">
+            </div>
+            <div class="logo-energy">
+                <img src="../../../assets/images/logo-energy.png" alt="logo-energy">
+            </div>
+        </div>
+        <div class="info">
+            <div class="intro">
+                <p>
+                    <span>{{infoCertificador.empresa}}</span> y su plataforma de intercambio comercial de energía verde <span>EnergyChain</span> certifican que
+                </p>
+            </div>
+            <div class="agente-name">
+                <p>{{infoCertificadoAgente.nombreEmpresa}}</p>
+            </div>
+            <div class="info-text">
+                <p>
+                    Ha {{verbo}} en el mercado de energía renovable hasta el día de hoy, {{fechaActual}} de {{anioActual}}, un total de
+                </p>
+            </div>
+            <div class="cantidad-energia">
+                <p>{{cantidadEnergia}} MW de energía verde</p>
+            </div>
+            <!-- <div class="info-text">
+                <p>
+                    Para conocer el detalle consultar en
+                    <a>echain.com/#34FG%)Aa</a>
+                </p>
+            </div> -->
+            <div class="firma">
+                <img src="../../../assets/images/firma.svg" alt="firma">
+            </div>
+            <div class="info-text mb-20">
+                <p>Ricardo Gallego</p>
+                <p>Director técnico y comercial</p>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center flex-row mt-20">
+        <button class="cancel-button-mvm w-100-px mr-30" mat-ripple (click)="dialogRef.close()">Cancelar</button>
+        <button class="button-mvm w-100-px" mat-ripple>Descargar</button>
+    </div>
+</div>

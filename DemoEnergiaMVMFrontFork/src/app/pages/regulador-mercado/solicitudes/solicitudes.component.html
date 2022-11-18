@@ -1,0 +1,20 @@
+<div class="container container-solicitudes">
+    <div class="titulo">
+        <h1 class="title-xg">Solicitudes</h1>
+    </div>
+    <div class="subtitulo">
+        <a class="color-green">Administrador</a>
+        <mat-icon>keyboard_arrow_right</mat-icon><a class="color-green">Solicitudes pendientes</a>
+    </div>
+    <div class="container-card-registros">
+        <div class="card-registros" *ngFor="let solicitud of solicitudesRegistro; let index = index">
+            <img src="../../../../assets/logoEmpresas/Logo_EPM.png" alt="">
+            <span class="linea-gradiente"></span>
+            <div class="ver-detalles">
+                <span class="title">{{solicitud.tipoContrato|tipoContrato}}</span>
+                <button class="button-mvm" mat-stroked-button (click)="onDiligenciarSolicitud(index,solicitud)">Aceptar</button>
+                <button class="button-mvm" mat-stroked-button>Rechazar</button>
+            </div>
+        </div>
+    </div>
+</div>

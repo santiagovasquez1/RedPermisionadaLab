@@ -1,0 +1,151 @@
+<div class="container-generadores">
+
+    <div class="pais-generadores">
+        <div class="tipo-mapa">
+            <span class="title">{{tipoMapa}}</span>
+        </div>
+        <app-mapa-colombia (departamento)="addItem($event)"></app-mapa-colombia>
+    </div>
+
+    <div class="energia-dpto">
+        <div class="header">
+            <span class="title">{{departamento}}</span>
+        </div>
+        <div class="content-card">
+
+            <div class="container-pie" *ngIf="tipoMapa=='Plantas de energía'">
+              <span class="text-gris-p w-500" id="title-pie">Total de energía</span>
+              
+              <div class="img-aerogenerador">
+                <img src="../../../../assets/images/aerogenerador.svg" alt="">
+              </div>
+              <div class="pie-generadores pie" >
+                <canvas baseChart
+                        [data]="pieChartData"
+                        [type]="pieChartType"
+                        [options]="pieChartOptions">
+                        [legend]="legends">
+                </canvas>
+              </div>
+              <div class="img-panel">
+                <img src="../../../../assets/images/panel.svg" alt="">
+              </div>
+              
+            </div>
+
+            <div class="container-pie" *ngIf="tipoMapa=='Clientes'">
+              <span class="text-gris-p w-500" id="title-pie">Total de energía</span>
+
+              <div class="img-aerogenerador">
+                <img class="svg-aerogenerador" src="../../../../assets/images/aerogenerador.svg" alt="">
+              </div>
+
+              <div class="pie-clientes pie" >
+                <canvas baseChart 
+                        [data]="pieChartData2" 
+                        [type]="pieChartType"
+                        [options]="pieChartOptions">
+                </canvas>
+              </div>
+
+              <div class="img-panel">
+                <img class="svg-panel" src="../../../../assets/images/panel.svg" alt="">
+              </div>
+            </div>
+
+            <mat-accordion>
+                <mat-expansion-panel (opened)="panelOpenState = true"
+                                        (closed)="panelOpenState = false">
+                    <mat-expansion-panel-header>
+                    <mat-panel-title class="text-gris-p">
+                        Detalle por región
+                    </mat-panel-title>
+                    </mat-expansion-panel-header>
+
+                    <div class="buttons-acordeon text-gris-p">
+                    <!--
+                    <a class="text-gris-p" (click)="tipoMapa='Plantas de energía'">Plantas de energía</a>
+                    <a class="text-gris-p" (click)="tipoMapa='Clientes'" >Clientes</a>
+                    -->
+                    <a class="text-gris-p" (click)="changeMapa('Plantas de energía')">Plantas de energía</a>
+                    <a class="text-gris-p" (click)="changeMapa('Clientes')" >Clientes</a>
+                    </div>
+                    
+                </mat-expansion-panel>
+            </mat-accordion>
+            
+
+          <div class="table-container"> 
+            <div class="overflow">
+              <mat-table  #table [dataSource]="dataSource" class="mvm-table">
+              
+                <ng-container matColumnDef="nombre" *ngIf="tipoMapa == 'Plantas de energía'">
+                  <mat-header-cell *matHeaderCellDef>Nombre de planta</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.nombre}}</mat-cell>
+                </ng-container>
+  
+                <ng-container matColumnDef="ciudad" *ngIf="tipoMapa == 'Plantas de energía'">
+                  <mat-header-cell *matHeaderCellDef>Ciudad</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.ciudad}}</mat-cell>
+                </ng-container>
+  
+                <ng-container matColumnDef="tecnologia" *ngIf="tipoMapa == 'Plantas de energía'">
+                    <mat-header-cell *matHeaderCellDef>Tipo de energía</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.tecnologia}}</mat-cell>
+                </ng-container>
+              
+                <ng-container matColumnDef="cantidadEnergia" *ngIf="tipoMapa == 'Plantas de energía'">
+                    <mat-header-cell *matHeaderCellDef>Cantidad de Energía</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.cantidadEnergia}}</mat-cell>
+                </ng-container>
+              
+                <ng-container matColumnDef="capacidadNominal" *ngIf="tipoMapa == 'Plantas de energía'">
+                    <mat-header-cell *matHeaderCellDef>Capacidad nominal</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.capacidadNominal}}</mat-cell>
+                </ng-container>
+  
+                <ng-container matColumnDef="tasaEmision" *ngIf="tipoMapa == 'Plantas de energía'">
+                    <mat-header-cell *matHeaderCellDef>Tasa de emision</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{element.tasaEmision}}</mat-cell>
+                </ng-container>
+  
+                <!--Columnas clientes-->
+                <ng-container matColumnDef="nombre" *ngIf="tipoMapa == 'Clientes'">
+                  <mat-header-cell *matHeaderCellDef>Nombre del cliente</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.empresa}}</mat-cell>
+                </ng-container>
+  
+                <ng-container matColumnDef="ciudad" *ngIf="tipoMapa == 'Clientes'">
+                  <mat-header-cell *matHeaderCellDef>Ciudad</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.ciudad}}</mat-cell>
+                </ng-container>
+                
+                <ng-container matColumnDef="cantidadSolar" *ngIf="tipoMapa == 'Clientes'">
+                  <mat-header-cell *matHeaderCellDef>Cantidad de energía solar</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.cantidadSolar}}</mat-cell>
+                </ng-container>
+  
+                <ng-container matColumnDef="cantidadEolica" *ngIf="tipoMapa == 'Clientes'">
+                  <mat-header-cell *matHeaderCellDef>Cantidad de energía eólica</mat-header-cell>
+                  <mat-cell *matCellDef="let element">{{element.cantidadEolica}}</mat-cell>
+                </ng-container>
+  
+              
+                <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+                <mat-row *matRowDef="let row; columns:displayedColumns"></mat-row>
+              </mat-table>
+            </div>
+            
+            <div class="table-container mt-10 fadeIn height-auto">
+              <mat-paginator class="mvm-paginator" #paginator [pageSizeOptions]="[5,10, 25, 100 ]" showFirstLastButtons></mat-paginator>
+            </div>
+            
+          </div>
+
+          
+
+        </div>
+
+    </div>
+    
+</div>
