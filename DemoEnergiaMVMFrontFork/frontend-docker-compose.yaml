@@ -1,17 +1,18 @@
 version: '3'
 services:
-  truffle:
-    container_name: truffle-container
-    image: truffle:v1
+  frontend_Mvm:
+    container_name: Frontend_DemoMvm_Container
+    image: demomvm:v1
     build:
       context: .
       dockerfile: dockerfile
     networks:
       redpermisionadalab_rpc:
-        ipv4_address: 172.21.0.8
+        ipv4_address: 172.21.0.9
+    ports:
+      - 80:80
     volumes:
-      - ./build/:/app/build/
-      - ../build/:/app/build/
+      - ./build:/app/build 
 
 networks:
   redpermisionadalab_rpc:

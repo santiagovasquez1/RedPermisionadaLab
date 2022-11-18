@@ -2,6 +2,7 @@ workDir=$(pwd)
 networkNodes="networkNodes"
 EnodeParams="Enodes.params"
 UrlsParams="Urls.params"
+contractsBuild="$workDir/build"
 numNodes=$1
 nodePrefix=$2
 p2pDefault=$3
@@ -12,6 +13,10 @@ enodes=()
 
 if [[ -d "$networkNodes" ]]; then
     rm -r "$networkNodes"
+fi
+
+if [[ -d "$contractsBuild" ]]; then
+    rm -r "$contractsBuild"
 fi
 
 if [[ -f "$EnodeParams" ]]; then
@@ -25,6 +30,7 @@ fi
 docker compose -f "$workDir/initial-besu.yaml" down
 docker compose -f "$workDir/networkPostProcess/post-proces-docker-compose.yaml" down
 docker compose -f "$workDir/DemoMvmTruffle_Fork/truffle-docker-compose.yaml" down
+docker compose -f "$workDir/DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" down
 docker compose -f "$workDir/set-network-docker-compose.yaml" down
 
 if [[ -z "$numNodes" ]]; then
@@ -104,15 +110,36 @@ for keyDir in $keysDirs; do
     privateKey=$(cat $workDir/$networkNodes/$nodePath/data/key.pub)
     enodes+=("enode://${privateKey:2}@$nodeIp:$p2pNumber")
 
-    echo "${enodes[counter]}" >> "$workDir/$EnodeParams"
-    echo "$uri" >> "$workDir/$UrlsParams"
+    echo "${enodes[counter]}" >>"$workDir/$EnodeParams"
+    echo "$uri" >>"$workDir/$UrlsParams"
     echo "${enodes[counter]}"
     let "counter=counter+1"
 done
 
 docker compose -f "$workDir/set-network-docker-compose.yaml" up -d
-docker compose -f "$workDir/networkPostProcess/post-proces-docker-compose.yaml" build 
-docker compose -f "$workDir/networkPostProcess/post-proces-docker-compose.yaml" up -d 
-docker compose -f "$workDir/DemoMvmTruffle_Fork/truffle-docker-compose.yaml" up -d 
+
+if [[ "$(docker images -q networkpostprocess:v1 2>/dev/null)" == "" ]]; then
+    docker compose -f "$workDir/networkPostProcess/post-proces-docker-compose.yaml" build
+fi
+
+docker compose -f "$workDir/networkPostProcess/post-proces-docker-compose.yaml" up -d
+
+if [[ "$(docker images -q truffle:v1 2>/dev/null)" == "" ]]; then
+    docker compose -f "$workDir/DemoMvmTruffle_Fork/truffle-docker-compose.yaml" build
+fi
+
+docker compose -f "$workDir/DemoMvmTruffle_Fork/truffle-docker-compose.yaml" up -d
+
+while ! [[ -d "$contractsBuild/contracts" ]]; do
+    echo "Esperando a que se compilen los contratos"
+    sleep 5
+done
+
+cp -rv "$contractsBuild" "$workdir/DemoEnergiaMVMFrontFork/build"
+
+# if [[ "$(docker images -q demomvm:v1 2>/dev/null)" == "" ]]; then
+#     docker compose -f "$workDir/DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" build
+# fi
+# docker compose -f "$workDir/DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" up -d
 
 echo "Fin de configuracion"
