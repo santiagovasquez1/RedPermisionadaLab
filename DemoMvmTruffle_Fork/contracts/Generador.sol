@@ -14,8 +14,6 @@ contract Generador is Agente {
     address public generadorTransactionsHelper;
     InfoPlanta[] private plantasEnergia;
     mapping(address => bool) private existenPlantas;
-    mapping(address => AcuerdoEnergia[]) private acuerdosDeCompraPorCliente;
-    // AcuerdoEnergia[] private acuerdosDeCompraGenerador;
     uint256 private acumuladoVenta;
     InfoCompraEnergia[] private ComprasRealizadas;
     uint256 private precioVentaEnergia;
@@ -29,6 +27,7 @@ contract Generador is Agente {
     event inyeccionEnergia();
     event inyeccionEnergiaEnBolsa();
     event acuerdoConCliente();
+    event actualizacionContrato();
 
     constructor(
         InfoContrato memory _infoContrato,
@@ -92,21 +91,15 @@ contract Generador is Agente {
         energiaDeBolsa.push(_tipoEnergia);
     }
 
-    function getAcuerdosDeCompraPorCliente(address _cliente)
-        external
+    function getAcuerdosDeCompraGenerador()
+        public
         view
         returns (AcuerdoEnergia[] memory)
     {
-        return acuerdosDeCompraPorCliente[_cliente];
+        return
+            GeneradorTransactionsHelper(generadorTransactionsHelper)
+                .getAcuerdosDeCompraGenerador();
     }
-
-    // function getAcuerdosDeCompraGenerador()
-    //     public
-    //     view
-    //     returns (AcuerdoEnergia[] memory)
-    // {
-    //     return acuerdosDeCompraGenerador;
-    // }
 
     function setPlantasEnergias(
         InfoPlanta memory _infoPlanta,
@@ -149,7 +142,7 @@ contract Generador is Agente {
             );
 
         inyectarEnergiaEnBolsa(_dirPlanta, _cantidadEnergiaBolsa);
-        inyeccionEnergiaBolsaGenerador(_tipoEnergia, _cantidadEnergia);
+        inyeccionEnergiaBolsaGenerador(_tipoEnergia, _cantidadEnergiaGenerador);
         emit inyeccionEnergia();
     }
 
@@ -160,15 +153,6 @@ contract Generador is Agente {
         GeneradorTransactionsHelper(generadorTransactionsHelper)
             .inyectarEnergiaBolsa(_dirPlanta, _cantidadEnergia);
         emit inyeccionEnergiaEnBolsa();
-    }
-
-    function setAcuerdoCompraPorCliente(
-        address _dirCliente,
-        AcuerdoEnergia memory _acuerdoEnergia
-    ) public onlyComercializador {
-        acuerdosDeCompraPorCliente[_dirCliente].push(_acuerdoEnergia);
-        // acuerdosDeCompraGenerador.push(_acuerdoEnergia);
-        emit acuerdoConCliente();
     }
 
     function getCantidadEnergiaPlantas(string memory _tipoEnergia)
@@ -222,6 +206,7 @@ contract Generador is Agente {
         inyeccionEnergiaBolsaGenerador(_tipoEnergia, _cantidadEnergia);
     }
 
+    //Funcion que se invoca despues de la compra de energia a la bolsa
     function inyeccionEnergiaBolsaGenerador(
         string memory _tipoEnergia,
         uint256 _cantidadEnergia
@@ -232,6 +217,43 @@ contract Generador is Agente {
                 break;
             }
         }
+    }
+
+    function inyectarEnergiaContratos(
+        address _dirCliente,
+        string memory _tipoEnergia,
+        uint256 _cantidadEnergia,
+        uint256 _indexGlobal
+    ) public authorize(msg.sender) {
+        uint256 indexEnergiaGenerador;
+        for (uint256 i = 0; i < energiaDeBolsa.length; i++) {
+            if (energiaDeBolsa[i].getNombreTipoEnergia().equals(_tipoEnergia)) {
+                indexEnergiaGenerador = i;
+                break;
+            }
+        }
+        require(
+            energiaDeBolsa[indexEnergiaGenerador].getCantidadEnergia() -
+                _cantidadEnergia >=
+                0,
+            "No puede gastar mas energia que la disponible"
+        );
+        GeneradorTransactionsHelper(generadorTransactionsHelper)
+            .inyectarEnergiaContratos(
+                _dirCliente,
+                _cantidadEnergia,
+                _indexGlobal
+            );
+
+        energiaDeBolsa[indexEnergiaGenerador].restarCantidadEnergia(
+            _cantidadEnergia
+        );
+
+        updateAcuerdoDeCompra();
+    }
+
+    function updateAcuerdoDeCompra() public {
+        emit actualizacionContrato();
     }
 
     function setCounterDespacho(uint256 _cantidadEnergia) external {

@@ -14,23 +14,19 @@ contract ReguladorMercado {
     string public name;
     address public owner;
     address public dirContrato;
-    address private dateTimeContract;
     uint256 public cantidadTokens = 1000000;
     SolicitudContrato[] private solicitudes;
-    mapping(bytes32 => OrdenDespacho) OrdenesDespacho;
-    OrdenDespacho[] private DespachosRealizados;
+    address[] private transactionsHelpers;
     event ComprandoTokens(uint256, address);
     event tokensDevueltos(uint256, address);
     event EnviarTokensEvent(uint256, address, address);
     event SolicitudDeRegistro(SolicitudContrato);
     event ContratoDiligenciado(SolicitudContrato);
-    event inyeccionDespacho();
 
-    constructor(string memory _name, address _dateTime) {
+    constructor(string memory _name) {
         name = _name;
         owner = msg.sender;
         dirContrato = address(this);
-        dateTimeContract = _dateTime;
         token = new ERC20Basic(cantidadTokens);
     }
 
@@ -40,6 +36,18 @@ contract ReguladorMercado {
             "No tienes permisos para realizar la transaccion"
         );
         _;
+    }
+
+    modifier authorize2() {
+        require(
+            tx.origin == owner,
+            "No tienes permisos para realizar la transaccion"
+        );
+        _;
+    }
+
+    function setTransactionsHelpers() public authorize2 {
+        transactionsHelpers.push(msg.sender);
     }
 
     function PrecioTokens(uint256 _numTokens) private pure returns (uint256) {
@@ -81,17 +89,11 @@ contract ReguladorMercado {
         address address1,
         address address2
     ) public {
-        //El numero de tokens debe de ser mayor a cero
-        require(
-            numTokens > 0,
-            "Necesitas devolver un numero positivo de tokens"
-        );
-        //EL cliente debe tener los tokens que desea devolver
+        require(numTokens > 0, "No puedes transferir un numero menor a cero");
         require(
             numTokens <= MisTokens(address1),
             "No puedes transferir mas tokens de los que tienes disponibles"
         );
-        //1.Devolucion de tokens por parte del cliente al contrato
         token.transferTwo(address1, address2, numTokens);
     }
 
@@ -264,82 +266,5 @@ contract ReguladorMercado {
             PrecioTokens(1)
         );
         return tempRegulador;
-    }
-
-    function setDespachoEnergia(address _dirGenerador, uint32 _cantidadEnergia)
-        public
-        authorize(msg.sender)
-    {
-        uint256 fechaOrden = DateTime(dateTimeContract).getDate(
-            block.timestamp
-        );
-
-        bytes32 hashOrdenDespacho = keccak256(
-            abi.encodePacked(_dirGenerador, fechaOrden)
-        );
-
-        OrdenDespacho memory tempOrden = OrdenDespacho(
-            _dirGenerador,
-            _cantidadEnergia,
-            0,
-            fechaOrden
-        );
-
-        OrdenesDespacho[hashOrdenDespacho] = tempOrden;
-    }
-
-    function editCantidadDespacho(
-        address _dirGenerador,
-        uint256 _cantidadEnergia,
-        uint256 _fechaOrden
-    ) public authorize(msg.sender) {
-        uint256 fechaOrden = DateTime(dateTimeContract).getDate(_fechaOrden);
-        bytes32 hashOrdenDespacho = keccak256(
-            abi.encodePacked(_dirGenerador, fechaOrden)
-        );
-
-        OrdenesDespacho[hashOrdenDespacho].cantidadEnergia = _cantidadEnergia;
-    }
-
-    //TODO: Agregar modifier para que solo se pueda ejecutar desde el generador
-    function inyeccionEnergiaOrden(
-        address _dirGenerador,
-        uint256 _cantidadEnergia,
-        uint256 _fechaOrden
-    ) public {
-        uint256 fechaOrden = DateTime(dateTimeContract).getDate(_fechaOrden);
-        bytes32 hashOrdenDespacho = keccak256(
-            abi.encodePacked(_dirGenerador, fechaOrden)
-        );
-        OrdenesDespacho[hashOrdenDespacho].cantidadProducida =
-            OrdenesDespacho[hashOrdenDespacho].cantidadProducida +
-            _cantidadEnergia;
-
-        DespachosRealizados.push(OrdenesDespacho[hashOrdenDespacho]);
-        emit inyeccionDespacho();
-    }
-
-    function getDespachosByGeneradorAndDate(
-        address _dirGenerador,
-        uint256 _fechaOrden
-    ) public view returns (OrdenDespacho memory) {
-        uint256 fechaOrden = DateTime(dateTimeContract).getDate(_fechaOrden);
-
-        bytes32 hashOrdenDespacho = keccak256(
-            abi.encodePacked(_dirGenerador, fechaOrden)
-        );
-        require(
-            OrdenesDespacho[hashOrdenDespacho].dirGenerador != nullAddress,
-            "No existe orden"
-        );
-        return OrdenesDespacho[hashOrdenDespacho];
-    }
-
-    function getDespachosRealizados()
-        public
-        view
-        returns (OrdenDespacho[] memory)
-    {
-        return DespachosRealizados;
     }
 }

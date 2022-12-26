@@ -1,6 +1,7 @@
 import { InfoCompraEnergia } from './../models/InfoCompraEnergia';
 import { InfoEmisionCompra } from 'src/app/models/InfoEmisionCompra';
 import { InfoEnergia } from './../models/InfoEnergia';
+import { AcuerdoEnergia } from './../models/AcuerdoEnergia';
 import { Observable, catchError, throwError, map, from, of } from 'rxjs';
 import { Injectable } from '@angular/core';
 import Web3 from 'web3';
@@ -28,8 +29,8 @@ export class ClienteContractService extends AgenteContractService {
     );
   }
 
-  postComprarEnergia(tipoEnergia: string, cantidad: number): Observable<any> {
-    return from(this.contract?.methods.comprarEnergia(tipoEnergia, cantidad).send({ from: this.account })).pipe(
+  postComprarEnergia(tipoEnergia: string, cantidad: number, fechaFin: number): Observable<any> {
+    return from(this.contract?.methods.comprarEnergia(tipoEnergia, cantidad,fechaFin).send({ from: this.account })).pipe(
       catchError((error) => {
         return throwError(() => new Error(error.message));
       })
@@ -114,6 +115,7 @@ export class ClienteContractService extends AgenteContractService {
   }
 
   getTokensDelegados(): Observable<number> {
+    console.log("LLAMANDO A getTokensDelegados CLIENTE SERVICE: ")
     return from(this.contract.methods.getTokensDelegados().call({ from: this.account })).pipe(
       map(data => data as number),
       catchError((error) => {
@@ -125,6 +127,15 @@ export class ClienteContractService extends AgenteContractService {
   getAcumuladoVenta(): Observable<number> {
     return from(this.contract.methods.getAcumuladoVenta().call({ from: this.account })).pipe(
       map(data => data as number),
+      catchError((error) => {
+        return throwError(() => new Error(error.message));
+      })
+    );
+  }
+
+  setAcuerdosDeCompra(AcuerdoEnergia: AcuerdoEnergia): Observable<any> {
+    console.log("this.account: ",this.account)
+    return from(this.contract?.methods.setAcuerdosDeCompra(AcuerdoEnergia).send({ from: this.account })).pipe(
       catchError((error) => {
         return throwError(() => new Error(error.message));
       })

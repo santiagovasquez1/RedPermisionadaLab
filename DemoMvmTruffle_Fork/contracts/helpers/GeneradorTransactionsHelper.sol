@@ -3,27 +3,36 @@ pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 import "../models/InfoContrato.sol";
 import "../ReguladorMercado.sol";
+import "../DespachosEnergia.sol";
 import "../MvmPlantaEnergiasFactory.sol";
 import "../libraries/Validations.sol";
 import "../BancoEnergia.sol";
 import "../Generador.sol";
+import "../Cliente.sol";
 import "../models/PlantaEnergia.sol";
+import "../AcuerdosLedger.sol";
 
 contract GeneradorTransactionsHelper {
     address private owner;
     address private reguladorMercado;
+    address private despachosEnergia;
     address private factoryPlanta;
     address private bancoEnergia;
+    address private acuerdosLedger;
 
     constructor(
         address _reguladorMercado,
         address _factoryPlanta,
-        address _bancoEnergia
+        address _bancoEnergia,
+        address _acuerdosLedger,
+        address _despachosEnergia
     ) {
         owner = msg.sender;
         reguladorMercado = _reguladorMercado;
         factoryPlanta = _factoryPlanta;
         bancoEnergia = _bancoEnergia;
+        acuerdosLedger = _acuerdosLedger;
+        despachosEnergia = _despachosEnergia;
     }
 
     modifier authorize() {
@@ -75,7 +84,7 @@ contract GeneradorTransactionsHelper {
         string memory _tipoEnergia,
         uint256 _cantidadEnergia
     ) public authorize {
-        OrdenDespacho memory ordenDespacho = ReguladorMercado(reguladorMercado)
+        OrdenDespacho memory ordenDespacho = DespachosEnergia(despachosEnergia)
             .getDespachosByGeneradorAndDate(_dirGenerador, block.timestamp);
 
         uint256 energiaDespachada = Generador(_dirGenerador)
@@ -99,10 +108,11 @@ contract GeneradorTransactionsHelper {
         );
 
         Generador(_dirGenerador).setCounterDespacho(_cantidadEnergia);
-        ReguladorMercado(reguladorMercado).inyeccionEnergiaOrden(
+        DespachosEnergia(despachosEnergia).inyeccionEnergiaOrden(
             _dirGenerador,
             _cantidadEnergia,
-            block.timestamp
+            block.timestamp,
+            ordenDespacho.index
         );
 
         BancoEnergia(bancoEnergia).setInfoTx(
@@ -149,9 +159,6 @@ contract GeneradorTransactionsHelper {
         BancoEnergia(bancoEnergia).setInfoInyeccionesEnergias(
             _infoInyeccionEnergia
         );
-
-        //Restar energia de planta
-        //PlantaEnergia(_dirPlanta).gastoEnergia(_cantidadEnergia);
     }
 
     function isTipoEnergiaValido(string memory _tipoEnergia)
@@ -165,60 +172,36 @@ contract GeneradorTransactionsHelper {
             Validations.validarEnergiasDisponibles(_tipoEnergia, infoEnergias);
     }
 
-    // function ComprarEnergia(
-    //     address _dirGenerador,
-    //     address _dirPlanta,
-    //     uint256 cantidadEnergia,
-    //     address _dirOwnerContrato
-    // ) external authorize {
-    //     //Verificar que exista la planta de energia
-    //     require(
-    //         Generador(_dirGenerador).existePlanta(_dirPlanta),
-    //         "No existe la planta de energia"
-    //     );
-    //     string memory tipoEnergia = PlantaEnergia(_dirPlanta)
-    //         .getTipoEnergia()
-    //         .nombre;
+    function inyectarEnergiaContratos(
+        address _dirCliente,
+        uint256 _cantidadEnergia,
+        uint256 _indexGlobal
+    ) public authorize {
+        AcuerdoEnergia memory acuerdoCompra = AcuerdosLedger(acuerdosLedger)
+            .getAcuerdoByIndex(_indexGlobal);
+        require(
+            acuerdoCompra.dataGenerador.dirContrato == msg.sender,
+            "Generador incorrecto"
+        );
+        require(
+            acuerdoCompra.dataCliente.dirContrato == _dirCliente,
+            "Cliente incorrecto"
+        );
 
-    //     //Comprobar que la cantiadad de energia solicitada no supere la producida
-    //     uint256 cantidadEnergiaDisponible = PlantaEnergia(_dirPlanta)
-    //         .getTipoEnergia()
-    //         .cantidadEnergia;
+        require(
+            acuerdoCompra.cantidadEnergiaInyectada + _cantidadEnergia <=
+                acuerdoCompra.cantidadEnergiaTotal,
+            "No puede inyectar mas energia que la total"
+        );
 
-    //     require(
-    //         cantidadEnergiaDisponible >= cantidadEnergia,
-    //         "No puede comprar mas energia de la disponible"
-    //     );
+        acuerdoCompra.cantidadEnergiaInyectada += _cantidadEnergia;
+        AcuerdosLedger(acuerdosLedger).updateAcuerdoDeCompra(
+            acuerdoCompra,
+            _indexGlobal
+        );
 
-    //     //Calcular el coste de la energia
-    //     uint256 costeEnergia = PlantaEnergia(_dirPlanta).getCosteEnergia(
-    //         cantidadEnergia,
-    //         Generador(_dirGenerador).getPrecioEnergia()
-    //     );
-    //     //Verficar que el comprador cuente con fondos suficientes
-    //     require(
-    //         costeEnergia <=
-    //             ReguladorMercado(reguladorMercado).MisTokens(_dirOwnerContrato),
-    //         "No tienes tokens suficientes"
-    //     );
-
-    //     //Transferencia de los tokens al owner del contrato
-    //     ReguladorMercado(reguladorMercado).IntercambiarTokens(
-    //         _dirOwnerContrato,
-    //         Generador(_dirGenerador).getInfoContrato().owner,
-    //         msg.sender,
-    //         costeEnergia
-    //     );
-
-    //     //Descontar la energia disponible
-    //     PlantaEnergia(_dirPlanta).gastoEnergia(cantidadEnergia);
-
-    //     BancoEnergia(bancoEnergia).onCantidadEnergiaChange(
-    //         tipoEnergia,
-    //         cantidadEnergia,
-    //         Operacion.restar
-    //     );
-    // }
+        Cliente(_dirCliente).updateAcuerdoDeCompra();
+    }
 
     function compraEnergiaBolsa(
         address _ownerGenerador,
@@ -232,5 +215,12 @@ contract GeneradorTransactionsHelper {
         );
     }
 
-
+    function getAcuerdosDeCompraGenerador()
+        public
+        view
+        returns (AcuerdoEnergia[] memory)
+    {
+        return
+            AcuerdosLedger(acuerdosLedger).getAcuerdosByGenerador(msg.sender);
+    }
 }

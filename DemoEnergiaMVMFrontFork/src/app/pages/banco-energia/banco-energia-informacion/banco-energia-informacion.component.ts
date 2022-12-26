@@ -4,6 +4,9 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InfoEnergia } from 'src/app/models/InfoEnergia';
 import { BancoEnergiaService } from 'src/app/services/banco-energia.service';
+import { FijarPreciosComponent } from '../../generador/fijar-precios/fijar-precios.component';
+import { MatDialog } from '@angular/material/dialog';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-banco-energia-informacion',
@@ -14,15 +17,22 @@ export class BancoEnergiaInformacionComponent implements OnInit, OnDestroy {
   energiasDisponibles: InfoEnergia[] = [];
   energiaChangeEvent: any;
   panelOpenState = false;
+  tipoAgente:string;
+  dirContract:string;
+  precioEnergia: number;
 
   constructor(private bancoEnergia: BancoEnergiaService,
     private toastr: ToastrService,
-    private ngZone: NgZone) {
+    private ngZone: NgZone,
+    public dialog: MatDialog,
+    private spinner: NgxSpinnerService,) {
 
   }
 
   async ngOnInit(): Promise<void> {
     try {
+      this.dirContract = localStorage.getItem('dirContract');
+      this.tipoAgente = localStorage.getItem('tipoAgente');
       let promises: Promise<void>[] = [];
       promises.push(this.bancoEnergia.loadBlockChainContractData());
       await Promise.all(promises);
@@ -44,6 +54,8 @@ export class BancoEnergiaInformacionComponent implements OnInit, OnDestroy {
       console.log(error);
       this.toastr.error(error.message, 'Error');
     }
+
+    this.loadPrecioVenta();
   }
 
   ngOnDestroy(): void {
@@ -53,6 +65,18 @@ export class BancoEnergiaInformacionComponent implements OnInit, OnDestroy {
 
   changeBanco(mapa){
 
+  }
+
+  loadPrecioVenta(){
+    this.bancoEnergia.getPrecioVentaEnergia().subscribe({
+      next: (data) => {
+        this.spinner.hide();
+        this.precioEnergia = data;
+      }, error: (error) => {
+        this.spinner.hide();
+        this.toastr.error(error.message, 'Error');
+      }
+    });
   }
 
   private setCantidadEnergiaInfo() {
@@ -67,8 +91,21 @@ export class BancoEnergiaInformacionComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFijarPrecios() {
-    
+  onFijarPrecios(){
+    const dialogRef = this.dialog.open(FijarPreciosComponent, {
+      width: '500px',
+      data: {
+        dirContract: this.dirContract,
+        energiasDisponibles: this.energiasDisponibles,
+        setPrecio: 'bolsa'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next:()=>{
+        this.loadPrecioVenta()
+      }
+    })
   }
 
 }

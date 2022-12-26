@@ -12,10 +12,14 @@ import "./helpers/ClienteTransactionsHelper.sol";
 
 contract Cliente is Agente {
     uint256 public contadorAcuerdos = 0;
-    using StringLibrary for string;
     address private bancoEnergia;
     address private clienteTransactionHelper;
-    AcuerdoEnergia[] private acuerdosDeCompra;
+    uint256 private energiaAcuerdosCompra;
+    uint256 private energiaGastada;
+    uint256 private energiaTotal;
+
+    event actualizacionContrato();
+    using StringLibrary for string;
 
     constructor(
         InfoContrato memory _infoContrato,
@@ -65,23 +69,22 @@ contract Cliente is Agente {
         view
         returns (AcuerdoEnergia[] memory)
     {
-        return acuerdosDeCompra;
+        return
+            ClienteTransactionsHelper(clienteTransactionHelper)
+                .getAcuerdosDeCompra();
     }
 
     function setAcuerdosDeCompra(AcuerdoEnergia memory _acuerdoCompra)
         public
         onlyHelper(clienteTransactionHelper)
     {
-        _acuerdoCompra.indexGlobal = contadorAcuerdos;
-        acuerdosDeCompra.push(_acuerdoCompra);
-        contadorAcuerdos++;
+        ClienteTransactionsHelper(clienteTransactionHelper).setAcuerdosDeCompra(
+                _acuerdoCompra
+            );
     }
 
-    function updateAcuerdoDeCompra(
-        AcuerdoEnergia memory _acuerdoCompra,
-        uint256 _index
-    ) public onlyComercializador(msg.sender) {
-        acuerdosDeCompra[_index] = _acuerdoCompra;
+    function updateAcuerdoDeCompra() public {
+        emit actualizacionContrato();
     }
 
     function comprarEnergia(
@@ -95,144 +98,58 @@ contract Cliente is Agente {
             _cantidadEnergia,
             _fechaFin
         );
+        setEnergiaCliente();
+        setEnergiaTotal();
     }
 
-    // function gastoEnergia(string memory _tipoEnergia, uint256 _cantidadEnergia)
-    //     public
-    //     authorize(msg.sender)
-    // {
-    //     InfoEnergia[] memory infoEnergias = BancoEnergia(bancoEnergia)
-    //         .getTiposEnergiasDisponibles();
-    //     require(
-    //         Validations.validarEnergiasDisponibles(_tipoEnergia, infoEnergias),
-    //         "El tipo de energia no esta disponible"
-    //     );
-    //     uint256 cantidadDisponible = mappingEnergiasCliente[_tipoEnergia]
-    //         .getCantidadEnergia();
-    //     require(
-    //         cantidadDisponible - _cantidadEnergia >= 0,
-    //         "No hay suficiente energia"
-    //     );
-    //     mappingEnergiasCliente[_tipoEnergia].restarCantidadEnergia(
-    //         _cantidadEnergia
-    //     );
+    function setEnergiaCliente() private authorize(msg.sender) {
+        energiaAcuerdosCompra = ClienteTransactionsHelper(
+            clienteTransactionHelper
+        ).setEnergiasCliente();
+    }
 
-    //     BancoEnergia(bancoEnergia).setInfoTx(
-    //         InfoTx(
-    //             TipoTx.consumo,
-    //             block.timestamp,
-    //             _tipoEnergia,
-    //             _cantidadEnergia,
-    //             infoContrato.dirContrato,
-    //             infoContrato.empresa,
-    //             nullAddress,
-    //             "",
-    //             BancoEnergia(bancoEnergia).getContadorTx()
-    //         )
-    //     );
-    // }
+    function setEnergiaTotal() private authorize(msg.sender) {
+        energiaTotal = energiaAcuerdosCompra - energiaGastada;
+    }
 
-    // function getEnergiaCliente(string memory _tipoEnergia)
-    //     public
-    //     view
-    //     returns (InfoEnergia memory)
-    // {
-    //     return mappingEnergiasCliente[_tipoEnergia].getInfoEnergia();
-    // }
+    function setGastoEnergia(uint256 _cantidadEnergia)
+        public
+        authorize(msg.sender)
+        returns (uint256)
+    {
+        require(
+            energiaAcuerdosCompra - _cantidadEnergia >= 0,
+            "No puedes gastar mas energia que la disponible"
+        );
+        BancoEnergia(bancoEnergia).setInfoTx(
+            InfoTx(
+                TipoTx.consumo,
+                block.timestamp,
+                "",
+                _cantidadEnergia,
+                infoContrato.dirContrato,
+                infoContrato.empresa,
+                nullAddress,
+                "",
+                BancoEnergia(bancoEnergia).getContadorTx()
+            )
+        );
 
-    // function setEnergiaCliente(
-    //     string memory _tipoEnergia,
-    //     uint256 _cantidadEnergia
-    // ) public {
-    //     if (address(mappingEnergiasCliente[_tipoEnergia]) == nullAddress) {
-    //         mappingEnergiasCliente[_tipoEnergia] = TipoEnergiaFactory(
-    //             factoryEnergia
-    //         ).generarNuevaEnergia(_tipoEnergia, _cantidadEnergia);
-    //     } else {
-    //         mappingEnergiasCliente[_tipoEnergia].addCantidadEnergia(
-    //             _cantidadEnergia
-    //         );
-    //     }
-    // }
+        setEnergiaTotal();
+        return energiaTotal;
+    }
 
-    // function getTokensDelegados() public view returns (uint256) {
-    //     address comercializador = infoContrato.comercializador;
-    //     uint256 tokensDelegados = ReguladorMercado(reguladorMercado)
-    //         .getTokensDelegadosByAddress(infoContrato.owner, comercializador);
+    function getEnergiaCliente() public view returns (uint256) {
+        return energiaAcuerdosCompra;
+    }
 
-    //     uint256 contadorEmisiones = Comercializador(comercializador)
-    //         .contadorEmisiones();
-    //     uint256 contadorTokensEnSolicitud = 0;
-    //     for (uint256 i = 0; i <= contadorEmisiones; i++) {
-    //         if (
-    //             Comercializador(comercializador)
-    //                 .getInfoEmisionesDeCompra(i)
-    //                 .ownerCliente ==
-    //             infoContrato.owner &&
-    //             Comercializador(comercializador)
-    //                 .getInfoEmisionesDeCompra(i)
-    //                 .estado ==
-    //             EstadoCompra.pendiente
-    //         ) {
-    //             string memory tipoEnergia = Comercializador(comercializador)
-    //                 .getInfoEmisionesDeCompra(i)
-    //                 .tipoEnergia;
-    //             uint256 cantidadEnergia = Comercializador(comercializador)
-    //                 .getInfoEmisionesDeCompra(i)
-    //                 .cantidadEnergia;
-    //             contadorTokensEnSolicitud +=
-    //                 BancoEnergia(bancoEnergia)
-    //                     .getEnergiaByNombre(tipoEnergia)
-    //                     .precio *
-    //                 cantidadEnergia;
-    //         }
-    //     }
+    function getEnergiaGastada() public view returns (uint256) {
+        return energiaGastada;
+    }
 
-    //     return tokensDelegados - contadorTokensEnSolicitud;
-    // }
-
-    // function setAcumuladoVenta(uint256 cantidadEnergia) public {
-    //     acumuladoCompra += cantidadEnergia;
-    // }
-
-    // function getAcumuladoVenta() public view returns (uint256) {
-    //     return acumuladoCompra;
-    // }
-
-    // function addCompraCliente(
-    //     address _dirGenerador,
-    //     string memory _nombreGenerador,
-    //     address _dirPlanta,
-    //     string memory _nombrePlanta,
-    //     string memory _tipoEnergia,
-    //     uint256 _cantidadEnergia
-    // ) external onlyComercializador(msg.sender) {
-    //     InfoCompraEnergia memory _infoCompraEnergia = InfoCompraEnergia(
-    //         infoContrato.owner,
-    //         infoContrato.dirContrato,
-    //         infoContrato.empresa,
-    //         _dirGenerador,
-    //         _nombreGenerador,
-    //         _dirPlanta,
-    //         _nombrePlanta,
-    //         infoContrato.comercializador,
-    //         Comercializador(infoContrato.comercializador)
-    //             .getInfoContrato()
-    //             .empresa,
-    //         _tipoEnergia,
-    //         _cantidadEnergia,
-    //         block.timestamp
-    //     );
-    //     ComprasRealizadas.push(_infoCompraEnergia);
-    // }
-
-    // function getComprasRealizadas()
-    //     public
-    //     view
-    //     returns (InfoCompraEnergia[] memory)
-    // {
-    //     return ComprasRealizadas;
-    // }
+    function getEnergiaTotal() public view returns (uint256) {
+        return energiaTotal;
+    }
 
     modifier onlyComercializador(address _direction) {
         require(

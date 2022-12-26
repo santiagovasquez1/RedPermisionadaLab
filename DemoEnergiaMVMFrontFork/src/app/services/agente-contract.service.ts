@@ -38,7 +38,6 @@ export abstract class AgenteContractService {
   public getInfoContrato(): Observable<InfoContrato> {
     return from(this.contract?.methods.getInfoContrato().call({ from: this.account })).pipe(
       map((data: any) => {
-        console.log("ejecutando getinfocontrato desde agente");
         let tempInfo = {
           owner: data.owner,
           ciudad: data.ciudad,
@@ -59,6 +58,31 @@ export abstract class AgenteContractService {
         return throwError(() => new Error(error.message));
       }));
   }
+
+  public getInfoContratoFromOthers(address: string): Observable<InfoContrato> {
+    return from(this.contract?.methods.getInfoContrato().call({ from: address })).pipe(
+      map((data: any) => {
+        let tempInfo = {
+          owner: data.owner,
+          ciudad: data.ciudad,
+          direccion: data.direccion,
+          telefono: data.telefono,
+          comercializador: data.comercializador,
+          contacto: data.contacto,
+          correo: data.correo,
+          departamento: data.departamento,
+          nit: data.nit,
+          dirContrato: data.dirContrato,
+          empresa: data.empresa,
+          tipoContrato: parseInt(data.tipoContrato) as TiposContratos
+        };
+        return tempInfo as InfoContrato;
+      }),
+      catchError((error) => {
+        return throwError(() => new Error(error.message));
+      }));
+  }
+
 
   public getMisTokens(): Observable<number> {
     return from(this.contract?.methods.MisTokens().call({ from: this.account })).pipe(

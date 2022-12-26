@@ -1,5 +1,5 @@
 import { TiposContratos } from './../../models/EnumTiposContratos';
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-aside',
@@ -9,13 +9,17 @@ import { Component, OnInit } from '@angular/core';
 export class AsideComponent implements OnInit {
   tipoContrato: TiposContratos
   showTableroPrincipal = false;
-
-  constructor() { 
+  @Output() onLinkClickEvent: EventEmitter<void>;
+  constructor() {
     this.tipoContrato = parseInt(localStorage.getItem('tipoAgente')) as TiposContratos;
-    
+    this.onLinkClickEvent = new EventEmitter<void>();
   }
 
   ngOnInit(): void {
+  }
+
+  onLinkClick() {
+    this.onLinkClickEvent.emit();
   }
 
 }

@@ -1,0 +1,7 @@
+.mvm-table .mat-column-index {
+    flex: 0 0 100px !important;
+}
+
+.mvm-table .mat-column-generador {
+    flex: 0 0 150px !important
+}

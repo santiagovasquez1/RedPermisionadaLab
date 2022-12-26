@@ -110,6 +110,8 @@ export class ListaClientesComponent implements OnInit, OnDestroy {
           let delegacionesObs: Observable<number>[] = [];
           this.dataSource.data.forEach(cliente => {
             delegacionesObs.push(this.reguladorMercado.getTokensDelegados(this.comercializador.dirContrato, cliente.owner));
+            console.log("dirContratoComercializador: ",this.comercializador.dirContrato)
+            console.log("cliente.owner: ",cliente.owner)
           });
 
           forkJoin(delegacionesObs).subscribe({

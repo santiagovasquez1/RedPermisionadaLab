@@ -1,7 +1,7 @@
 version: '3'
 services:
-  frontend_Mvm:
-    container_name: Frontend_DemoMvm_Container
+  frontend_Mvm_1:
+    # container_name: Frontend_DemoMvm_Container
     image: demomvm:v1
     build:
       context: .
@@ -11,6 +11,19 @@ services:
         ipv4_address: 172.21.0.9
     ports:
       - 80:80
+    volumes:
+      - ./build:/app/build 
+  frontend_Mvm_2:
+    # container_name: Frontend_DemoMvm_Container
+    image: demomvm:v1
+    build:
+      context: .
+      dockerfile: dockerfile
+    networks:
+      redpermisionadalab_rpc:
+        ipv4_address: 172.21.0.10
+    ports:
+      - 81:80
     volumes:
       - ./build:/app/build 
 

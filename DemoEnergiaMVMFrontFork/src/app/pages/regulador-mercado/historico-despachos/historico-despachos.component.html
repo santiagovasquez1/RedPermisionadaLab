@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="titulo">
+        <h2 class="title-xg">Histórico de despachos de energía</h2>
+    </div>
+    <app-filter *ngIf="filterFormProperties.length>0" [rowsForm]="filterFormProperties" (onfieldValueChange)="onfieldValueChange($event)"></app-filter>
+
+    <div class="table-container mt-30 fadeIn">
+        <mat-table #table [dataSource]="dataSource" class="mvm-table">
+            <ng-container matColumnDef="index">
+                <mat-header-cell *matHeaderCellDef>Index</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.index}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="generador">
+                <mat-header-cell *matHeaderCellDef>Generador</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.nombreGenerador}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="capacidadNominal">
+                <mat-header-cell *matHeaderCellDef>Capacidad Nominal Mw</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.capacidadNominal}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="energiaDespachada">
+                <mat-header-cell *matHeaderCellDef>Energía despachada Mw</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidadEnergia}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="energiaInyectada">
+                <mat-header-cell *matHeaderCellDef>Energía inyectada Mw</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidadProducida}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fechaDespacho">
+                <mat-header-cell *matHeaderCellDef>Fecha de despacho</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.fechaDespacho}}</mat-cell>
+            </ng-container>
+
+            <mat-header-row class="fadeIn" *matHeaderRowDef="displayedColumns; sticky: true "></mat-header-row>
+            <mat-row *matRowDef="let row; columns:displayedColumns "></mat-row>
+        </mat-table>
+    </div>
+    <div class="table-container mt-10 fadeIn ">
+        <mat-paginator class="mvm-paginator " #paginator [pageSizeOptions]="[5,10, 25, 100 ] " showFirstLastButtons></mat-paginator>
+    </div>
+</div>

@@ -24,6 +24,7 @@ export class BancoEnergiaService {
     await this.web3ConnectService.loadWeb3();
     this.web3 = this.winRef.window.web3 as Web3;
 
+
     const networkId = await this.web3.eth.net.getId();
     const networkData = bancoEnergia.networks[networkId];
     if (networkData) {
@@ -35,6 +36,7 @@ export class BancoEnergiaService {
     } else {
       window.alert('Esta aplicación no está disponible en este network.');
     }
+
   }
 
   getTiposEnergiasDisponibles(): Observable<InfoEnergia[]> {
@@ -52,6 +54,7 @@ export class BancoEnergiaService {
         return tempArray as InfoEnergia[];
       }),
       catchError((error) => {
+        
         return throwError(() => new Error(error.message));
       }));
   }
@@ -80,6 +83,23 @@ export class BancoEnergiaService {
       catchError((error) => {
         return throwError(() => new Error(error.message));
       }));
+  }
+
+  setPrecioVentaEnergia(precioEnergia: number): Observable<any> {
+    return from(this.contract?.methods.setPrecioVentaEnergia(precioEnergia).send({ from: this.account })).pipe(
+      catchError((error) => {
+        return throwError(() => new Error(error.message));
+      })
+    );
+  }
+
+  getPrecioVentaEnergia(): Observable<number> {
+    return from(this.contract.methods.getPrecioVentaEnergia().call({ from: this.account })).pipe(
+      map(data => data as number),
+      catchError((error) => {
+        return throwError(() => new Error(error.message));
+      })
+    );
   }
 
 }

@@ -88,7 +88,8 @@ export class ComprarEnergiaBolsaComponent implements OnInit {
           this.spinner.show();
           let infoEnergia = this.comprarEnergiaForm.get('tipoEnergia').value as InfoEnergia;
           let cantidadEnergia = this.comprarEnergiaForm.get('cantidadEnergia').value;
-          this.clienteService.postComprarEnergia(infoEnergia.nombre, cantidadEnergia).subscribe({
+          let fechaFin = Date.now() /1000;
+          this.clienteService.postComprarEnergia(infoEnergia.nombre, cantidadEnergia,fechaFin).subscribe({
             next: () => {
               this.spinner.hide();
               this.toastr.success('Emision de compra de energia', 'Éxito');

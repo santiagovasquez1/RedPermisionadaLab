@@ -2,22 +2,30 @@
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 import "../models/InfoContrato.sol";
+import "../models/Agente.sol";
 import "../ReguladorMercado.sol";
 import "../Cliente.sol";
 import "../Comercializador.sol";
 import "../BancoEnergia.sol";
 import "../Generador.sol";
+import "../AcuerdosLedger.sol";
 
 contract ComercializadorTransactionsHelper {
     address private owner;
     address private reguladorMercado;
     address private bancoEnergia;
+    address private acuerdosLedger;
     address public nullAddress = 0x0000000000000000000000000000000000000000;
 
-    constructor(address _reguladorMercado, address _bancoEnergia) {
+    constructor(
+        address _reguladorMercado,
+        address _bancoEnergia,
+        address _acuerdosLedger
+    ) {
         owner = msg.sender;
         reguladorMercado = _reguladorMercado;
         bancoEnergia = _bancoEnergia;
+        acuerdosLedger = _acuerdosLedger;
     }
 
     modifier authorize() {
@@ -38,64 +46,56 @@ contract ComercializadorTransactionsHelper {
         );
     }
 
-    function getAcuerdosByCliente(
-        address _dirComercializador,
-        address _dirCliente
-    ) public view returns (AcuerdoEnergia[] memory) {
-        return
-            Comercializador(_dirComercializador).getAcuerdosDeCompraPorCliente(
-                _dirCliente
-            );
-    }
-
-    function getAcuerdosByClienteAndFecha(
-        address _dirComercializador,
-        address _dirCliente,
-        uint256 _fechaSolicitud
-    ) external view returns (AcuerdoEnergia memory) {
-        AcuerdoEnergia memory tempAcuerdo;
-        AcuerdoEnergia[] memory acuerdosCliente = Comercializador(
-            _dirComercializador
-        ).getAcuerdosDeCompraPorCliente(_dirCliente);
-
-        require(acuerdosCliente.length > 0, "No existen acuerdos del cliente");
-
-        for (uint256 i = 0; i < acuerdosCliente.length; i++) {
-            if (acuerdosCliente[i].fechaSolicitud == _fechaSolicitud) {
-                tempAcuerdo = acuerdosCliente[i];
-                break;
-            }
-        }
-
-        return tempAcuerdo;
+    function getHistoricoAcuerdos()
+        public
+        view
+        returns (AcuerdoEnergia[] memory)
+    {
+        AcuerdosLedger(acuerdosLedger).getAcuerdosByComercializador(msg.sender);
     }
 
     function realizarAcuerdo(
         address _dirGenerador,
         address _dirCliente,
-        uint256 _indexAcuerdoCliente
+        uint256 _indexGlobal
     ) public authorize returns (AcuerdoEnergia memory _acuerdoEnergia) {
-        AcuerdoEnergia[] memory acuerdosCliente = Comercializador(msg.sender)
-            .getAcuerdosDeCompraPorCliente(_dirCliente);
+        AcuerdoEnergia memory acuerdoCliente = AcuerdosLedger(acuerdosLedger)
+            .getAcuerdoByIndex(_indexGlobal);
 
-        require(acuerdosCliente.length > 0, "No existen acuerdos del cliente");
-        Comercializador(msg.sender).updateAcuerdoCompra(
-            _dirCliente,
-            _indexAcuerdoCliente,
-            _dirGenerador,
-            block.timestamp
+        require(
+            acuerdoCliente.dataComercializador.dirContrato == msg.sender,
+            "No es un acuerdo de este comercializador"
         );
 
+        require(
+            acuerdoCliente.dataCliente.dirContrato == _dirCliente,
+            "Cliente incorrecto"
+        );
+
+        acuerdoCliente.dataGenerador.dirContrato = _dirGenerador;
+        acuerdoCliente.dataGenerador.nombreAgente = Agente(_dirGenerador)
+            .getInfoContrato()
+            .empresa;
+        acuerdoCliente.fechaInicio = block.timestamp;
+        acuerdoCliente.estadoAcuerdo = EstadoAcuerdo.activo;
+        acuerdoCliente.valorContrato =
+            Generador(_dirGenerador).getPrecioEnergia() *
+            acuerdoCliente.cantidadEnergiaTotal;
         //Actualizacion de info del contrato
-        acuerdosCliente = Comercializador(msg.sender)
-            .getAcuerdosDeCompraPorCliente(_dirCliente);
+        AcuerdosLedger(acuerdosLedger).updateAcuerdoDeCompra(
+            acuerdoCliente,
+            _indexGlobal
+        );
+
+        Cliente(_dirCliente).updateAcuerdoDeCompra();
+        Generador(_dirGenerador).updateAcuerdoDeCompra();
 
         BancoEnergia(bancoEnergia).setInfoTx(
             InfoTx(
                 TipoTx.solicitud,
                 block.timestamp,
-                acuerdosCliente[_indexAcuerdoCliente].tipoEnergia,
-                acuerdosCliente[_indexAcuerdoCliente].cantidadEnergiaTotal,
+                acuerdoCliente.tipoEnergia,
+                acuerdoCliente.cantidadEnergiaTotal,
                 _dirCliente,
                 Cliente(_dirCliente).getInfoContrato().empresa,
                 _dirGenerador,
@@ -104,6 +104,6 @@ contract ComercializadorTransactionsHelper {
             )
         );
 
-        return acuerdosCliente[_indexAcuerdoCliente];
+        return AcuerdosLedger(acuerdosLedger).getAcuerdoByIndex(_indexGlobal);
     }
 }

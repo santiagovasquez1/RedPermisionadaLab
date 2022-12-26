@@ -8,6 +8,7 @@ const ComercializadorTransactionsHelper = artifacts.require("ComercializadorTran
 const BancoEnergia = artifacts.require("BancoEnergia");
 const _DateTime = artifacts.require("DateTime");
 const Certificador = artifacts.require("Certificador");
+const AcuerdosLedger = artifacts.require('AcuerdosLedger');
 
 contract("Cliente", accounts => {
     let clienteTransactionsHelper;
@@ -35,15 +36,18 @@ contract("Cliente", accounts => {
     let clienteAddress;
     let _dateTime;
     let certificador;
+    let acuerdosLedger;
 
     beforeEach(async() => {
         [_dateTime, certificador] = await Promise.all([_DateTime.deployed(), Certificador.deployed()]);
 
-        regulador = await ReguladorMercado.new('Regulador mercado', _dateTime.address);
+        regulador = await ReguladorMercado.new('Regulador mercado');
         banco = await BancoEnergia.new(regulador.address, _dateTime.address);
+        acuerdosLedger = await AcuerdosLedger.new(regulador.address);
+
         let helpersInstances = [];
-        helpersInstances.push(ClienteTransactionsHelper.new(regulador.address, banco.address));
-        helpersInstances.push(ComercializadorTransactionsHelper.new(regulador.address, banco.address));
+        helpersInstances.push(ClienteTransactionsHelper.new(regulador.address, banco.address, acuerdosLedger.address, _dateTime.address));
+        helpersInstances.push(ComercializadorTransactionsHelper.new(regulador.address, banco.address, acuerdosLedger.address));
         [clienteTransactionsHelper, comercializadorTransactionsHelper] = await Promise.all(helpersInstances);
 
         let factoriesInstances = [];
@@ -83,7 +87,6 @@ contract("Cliente", accounts => {
             let comercializadores = await comercializadorFactory.getContratosOwners();
             let comercializadorAddress = comercializadores[0].dirContrato;
             let comercializador = await Comercializador.at(comercializadorAddress);
-            let owner = await cliente.getInfoContrato()
 
             await cliente.contratarComercializador(comercializador.address, { from: clienteOwner });
             await cliente.comprarEnergia('solar', 300, 100, { from: clienteOwner });
@@ -128,34 +131,3 @@ contract("Cliente", accounts => {
 
 
 });
-
-
-//     it("funcion devolver tokens", async() => {
-//         let cliente = await Cliente.at(clienteAddress);
-//         const numTokens = 1000;
-//         const valorEthers = web3.utils.toWei(numTokens.toString(), 'finney');
-//         await regulador.ComprarTokens(numTokens, { from: clienteOwner, value: valorEthers });
-//         await regulador.DevolverTokens(numTokens, { from: clienteOwner });
-//         let tokens2 = await cliente.MisTokens({ from: clienteOwner });
-//         assert.equal(tokens2.toNumber(), 0);
-//     });
-
-//     it("funcion comprarEnergia", async() => {
-//         let cliente = await Cliente.at(clienteAddress);
-//         let comercializadorFactory = await MvmComercializadorFactory.new(regulador.address);
-
-//         infoContrato.owner = accounts[2];
-//         infoContrato.empresa = 'Comercializador';
-//         infoContrato.tipoComercio = 0;
-//         await regulador.registrarSolicitud(infoContrato, 1, { from: accounts[2] });
-//         await comercializadorFactory.FactoryContrato(infoContrato, { from: accounts[0] });
-//         let comercializadores = await comercializadorFactory.getContratosOwners();
-//         let comercializadorAddress = comercializadores[0].dirContrato;
-//         let comercializador = await Comercializador.at(comercializadorAddress);
-
-//         await cliente.contratarComercializador(comercializador.address, { from: clienteOwner });
-
-//         let tx = await cliente.comprarEnergia('solar', 100, { from: clienteOwner });
-//         assert.equal(tx.logs[0].event, 'NecesidadEnergia');
-//     });
-// })

@@ -1,83 +1,83 @@
 <div>
     <div class="sidebar">
-    
-        <div *ngIf="tipoContrato == 0" class="avatar-container" [routerLink]="['/dashboard/cliente']">
+
+        <div *ngIf="tipoContrato == 0" class="avatar-container" [routerLink]="['/dashboard/cliente']" (click)="onLinkClick()">
             <img src="../../../assets/images/logoMVM.png" alt="">
         </div>
-        <div *ngIf="tipoContrato == 1" class="avatar-container" [routerLink]="['/dashboard/comercializador']">
+        <div *ngIf="tipoContrato == 1" class="avatar-container" [routerLink]="['/dashboard/comercializador']" (click)="onLinkClick()">
             <img src="../../../assets/images/logoMVM.png" alt="">
         </div>
-        <div *ngIf="tipoContrato == 2" class="avatar-container" [routerLink]="['/dashboard/generador']">
+        <div *ngIf="tipoContrato == 2" class="avatar-container" [routerLink]="['/dashboard/generador']" (click)="onLinkClick()">
             <img src="../../../assets/images/logoMVM.png" alt="">
         </div>
-        <div *ngIf="tipoContrato == 3" class="avatar-container" [routerLink]="['/dashboard/regulador-mercado']">
+        <div *ngIf="tipoContrato == 3" class="avatar-container" [routerLink]="['/dashboard/regulador-mercado']" (click)="onLinkClick()">
             <img src="../../../assets/images/logoMVM.png" alt="">
         </div>
-    
+
         <div class="container-section" *ngIf="tipoContrato == 0">
             <!--<span class="title-section">Cliente</span>-->
-            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente']" (click)="onLinkClick()">
                 <mat-icon>info</mat-icon>
                 <span>Información</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente/tokens']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente/tokens']" (click)="onLinkClick()">
                 <mat-icon>currency_exchange</mat-icon>
                 <span>Tokens</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente/lista-compras']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/cliente/lista-compras']" (click)="onLinkClick()">
                 <mat-icon>shopping_cart_checkout</mat-icon>
                 <span>Compras realizadas</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
         </div>
-    
+
         <div class="container-section" *ngIf="tipoContrato == 1">
             <!--<span class="title-section">Comercializador</span>-->
-            <a routerLinkActive="active" [routerLink]="['/dashboard/comercializador']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/comercializador']" (click)="onLinkClick()">
                 <mat-icon>info</mat-icon>
                 <span>Información</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['/dashboard/comercializador/lista-clientes']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/comercializador/lista-clientes']" (click)="onLinkClick()">
                 <mat-icon>format_list_bulleted</mat-icon>
                 <span>Lista de clientes</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['comercializador/emisiones-de-compra','pendientes']">
+            <a routerLinkActive="active" [routerLink]="['comercializador/emisiones-de-compra','pendientes']" (click)="onLinkClick()">
                 <mat-icon>library_books</mat-icon>
                 <span>Emisiones de compra</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
         </div>
-    
+
         <div class="container-section" *ngIf="tipoContrato==2">
             <!--<span class="title-section">Generadores</span>-->
-            <a routerLinkActive="active" [routerLink]="['/dashboard/generador']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/generador']" (click)="onLinkClick()">
                 <mat-icon>info</mat-icon>
                 <span>Información</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['generador/lista-plantas-energia']">
+            <a routerLinkActive="active" [routerLink]="['generador/lista-plantas-energia']" (click)="onLinkClick()">
                 <mat-icon>factory</mat-icon>
                 <span>Plantas de energia</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['generador/tokens']">
+            <a routerLinkActive="active" [routerLink]="['generador/tokens']" (click)="onLinkClick()">
                 <mat-icon>currency_exchange</mat-icon>
                 <span>Tokens</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
         </div>
-    
+
         <div class="container-section" *ngIf="tipoContrato==3">
-            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado']" (click)="onLinkClick()">
                 <mat-icon>info</mat-icon>
                 <span>Información</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado/registros']">
+            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado/registros']" (click)="onLinkClick()">
                 <mat-icon>book</mat-icon>
                 <span>Agentes del mercado</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
@@ -87,8 +87,15 @@
                 <span>Ordenes de despacho</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
+            <a routerLinkActive="active" [routerLink]="['/dashboard/regulador-mercado/historico-ordenes-despacho']">
+                <!-- TODO:Cambiar icono -->
+                <!-- <mat-icon>send</mat-icon> -->
+                <img src="../../../assets/images/Registro.svg" alt="registro">
+                <span>Historico ordenes de despacho</span>
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </a>
         </div>
-    
+
         <div class="container-section">
             <a routerLinkActive="active" (click)="showTableroPrincipal == false ? showTableroPrincipal = true: showTableroPrincipal=false">
                 <mat-icon>dashboard</mat-icon>
@@ -96,31 +103,31 @@
                 <mat-icon *ngIf="!showTableroPrincipal">keyboard_arrow_down</mat-icon>
                 <mat-icon *ngIf="showTableroPrincipal">keyboard_arrow_up</mat-icon>
             </a>
-    
-            <a routerLinkActive="active" [routerLink]="['/dashboard/informacion']" *ngIf="showTableroPrincipal">
+
+            <a routerLinkActive="active" [routerLink]="['/dashboard/informacion']" *ngIf="showTableroPrincipal" (click)="onLinkClick()">
                 <mat-icon>electric_bolt</mat-icon>
                 <span>Banco de energía</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-    
-            <a routerLinkActive="active" [routerLink]="['/dashboard']" *ngIf="showTableroPrincipal">
+
+            <a routerLinkActive="active" [routerLink]="['/dashboard']" *ngIf="showTableroPrincipal" (click)="onLinkClick()">
                 <mat-icon>bar_chart</mat-icon>
                 <span>Tablero principal</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-    
-            <a routerLinkActive="active" [routerLink]="['/dashboard/todos-generadores']" *ngIf="showTableroPrincipal">
+
+            <a routerLinkActive="active" [routerLink]="['/dashboard/todos-generadores']" *ngIf="showTableroPrincipal" (click)="onLinkClick()">
                 <mat-icon>pin_drop</mat-icon>
                 <span>Georeferenciación</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
-    
-            <a routerLinkActive="active" [routerLink]="['/dashboard/transacciones']" *ngIf="showTableroPrincipal">
+
+            <a routerLinkActive="active" [routerLink]="['/dashboard/transacciones']" *ngIf="showTableroPrincipal" (click)="onLinkClick()">
                 <mat-icon>payment</mat-icon>
                 <span>Transacciones</span>
                 <mat-icon>keyboard_arrow_right</mat-icon>
             </a>
         </div>
-    
+
     </div>
 </div>

@@ -2,6 +2,7 @@ $workDir = Get-Location;
 $networkNodes = "networkNodes";
 $EnodeParams = "Enodes.params"
 $UrlsParams = "Urls.params";
+$contractsBuild = "build";
 $numNodes = $args[0];
 $nodePrefix = $args[1];
 $p2pDefault = [int]$args[2];
@@ -12,6 +13,10 @@ $enodes = @();
 
 if (Test-Path -Path $networkNodes) {
     Remove-Item  $networkNodes -Recurse -Force
+}
+
+if (Test-Path -Path $workDir/$contractsBuild) {
+    Remove-Item -Recurse -Force $workDir/$contractsBuild
 }
 
 if (Test-Path -Path $EnodeParams) {
@@ -25,7 +30,13 @@ if (Test-Path -Path $UrlsParams) {
 docker compose -f "./initial-besu.yaml" down;
 docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" down
 docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" down
+docker compose -f "./DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" down
 docker compose -f "./set-network-docker-compose.yaml" down
+
+$existsImage = docker images -q demomvm:v1
+if (-not($null -eq $existsImage)) {
+    docker rmi --force demomvm:v1
+}
 
 if ($null -eq $numNodes) {
     $numNodes = 4;
@@ -85,6 +96,7 @@ docker compose -f "./initial-besu.yaml" up -d
 
 $existNetworkFiles = Test-Path -Path $networkFiles
 while (-Not ($existNetworkFiles)) {
+    Write-Output "Esperando a que se generen los archivos de configuracion";
     Start-Sleep 5;
     $existNetworkFiles = Test-Path -Path $networkFiles;
 }
@@ -122,13 +134,39 @@ for ($Counter = 0; $Counter -lt $keysDirs.Length; $Counter++) {
 }
 
 docker compose -f "./set-network-docker-compose.yaml" up -d 
-docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" up -d 
 
-$filter = docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" ps -q --services --filter "status=exited" | Out-String -Stream;
+$existsImage = docker images -q networkpostprocess:v1;
+if ( $null -eq $existsImage) {
+    docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" build 
+}
+docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" up -d;
+$postProcessStatus = docker ps -f "status=exited" --format "{{.Names}}";
+while ($null -eq $postProcessStatus) {
+    Write-Output "Esperando a que se sincronizen los nodos";
+    Start-Sleep 5;
+    $postProcessStatus = docker ps -f "status=exited";
+}
 
-# Write-Output Out-String -Stream $filter
+Start-Sleep 5;
+docker compose -f "./networkPostProcess/post-proces-docker-compose.yaml" down;
 
+$existsImage = docker images -q truffle:v1;
+if ( $null -eq $existsImage) {
+    docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" build;
+}
+    
 docker compose -f "./DemoMvmTruffle_Fork/truffle-docker-compose.yaml" up -d 
 
+$prueba = docker logs truffle-container --tail 1;
+while (-not($prueba -eq "Im up")) {
+    Write-Output "Esperando a que se generen los archivos de configuracion";
+    Start-Sleep 5;
+    $prueba = docker logs truffle-container --tail 1;
+}
+
+Copy-Item -Recurse -Force -Path $workDir/$contractsBuild $workDir/"DemoEnergiaMVMFrontFork";
+    
+docker compose -f "./DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" build;
+docker compose -f "./DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" up -d;
 Write-Output "Fin del proceso";
 

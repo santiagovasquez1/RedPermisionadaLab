@@ -240,7 +240,7 @@ form .form-actions-row {
     align-items: center;
 }
 
-.flex-column{
+.flex-column {
     display: flex;
     flex-direction: column;
 }
@@ -372,7 +372,6 @@ form .form-actions-row {
     cursor: pointer;
     transition: 300ms all;
     font-size: 14px;
-
 }
 
 .button-mvm {
@@ -422,10 +421,6 @@ form .form-actions-row {
     display: grid;
     grid-template-columns: 45% 55%;
     grid-template-rows: 100vh;
-}
-
-.imagen {
-    /*background-image: url(./assets/images/imgLogin.png);*/
 }
 
 .loginContainer .imagen #fondo {
@@ -542,6 +537,10 @@ form .form-actions-row {
     width: 200px !important;
 }
 
+.w-220 {
+    width: 220px !important;
+}
+
 .w-240 {
     width: 240px !important;
 }
@@ -618,11 +617,11 @@ form .form-actions-row {
     margin-bottom: 60px !important;
 }
 
-.ml-3{
+.ml-3 {
     margin-left: 3px !important;
 }
 
-.ml-10{
+.ml-10 {
     margin-left: 10px !important;
 }
 
@@ -630,9 +629,8 @@ form .form-actions-row {
     margin-left: 20px !important;
 }
 
-
-.mr-10{
-    margin-right: 10px !important; 
+.mr-10 {
+    margin-right: 10px !important;
 }
 
 .mr-20 {
@@ -646,6 +644,15 @@ form .form-actions-row {
 .main {
     display: grid;
     grid-template-columns: 250px 1% auto 1%;
+}
+
+.main-container {
+    width: 100%;
+    height: 100vh;
+}
+
+.main-container mat-drawer {
+    width: 250px !important;
 }
 
 .content-wrapper {
@@ -924,10 +931,6 @@ form .form-actions-row {
 .energia-dpto .container-acordeon table {
     width: 90%;
     max-height: 90%;
-}
-
-.container-generadores .tipo-energia-dpto {
-    /* background-color: #c77a1648; */
 }
 
 .departamento-generadores {
@@ -1354,6 +1357,14 @@ mat-dialog-container .mat-form-field-infix span label {
     flex: 0 0 100px !important;
 }
 
+.mvm-table .mat-column-despacho {
+    flex: 0 0 150px !important
+}
+
+.mvm-table .mat-column-generador {
+    flex: 0 0 250px !important
+}
+
 .mvm-table .mat-column-id {
     flex: 0 0 50px !important;
 }
@@ -1405,7 +1416,6 @@ mat-dialog-container .mat-form-field-infix span label {
     display: grid;
     grid-template-columns: 50% 50%;
     grid-template-rows: 85px 28% auto;
-
 }
 
 .container-banco-informacion .title {
@@ -1418,7 +1428,7 @@ mat-dialog-container .mat-form-field-infix span label {
     grid-row: 2/3;
 }
 
-.container-banco-informacion .mat-accordion .mat-expansion-panel{
+.container-banco-informacion .mat-accordion .mat-expansion-panel {
     background: none !important;
     box-shadow: none !important;
 }
@@ -1431,12 +1441,11 @@ mat-dialog-container .mat-form-field-infix span label {
     grid-template-rows: 30% 70%;
 }
 
-.container-banco-informacion .card-solar,.card-eolica {
+.container-banco-informacion .card-solar,
+.card-eolica {
     grid-row: 3/4;
     margin-left: 20px;
 }
-
-
 
 .container-banco-informacion .card-banco .header-card {
     display: flex;
@@ -1448,7 +1457,7 @@ mat-dialog-container .mat-form-field-infix span label {
     margin-top: 16px;
 }
 
-.container-banco-informacion .card-banco .header-card img{
+.container-banco-informacion .card-banco .header-card img {
     width: 48px;
     height: 48px;
 }
@@ -2079,7 +2088,7 @@ mat-dialog-container .mat-form-field-infix span label {
     height: 60.44px;
 }
 
-.button-mvm-asignar{
+.button-mvm-asignar {
     width: 100% !important;
     height: 30px !important;
     border: none;
@@ -2096,12 +2105,211 @@ mat-dialog-container .mat-form-field-infix span label {
     background-color: var(--verde-oscuro) !important;
 }
 
-.container-fijar-precios{
+.container-fijar-precios {
     display: flex;
     justify-content: center;
     align-items: end;
 }
 
-.container-fijar-precios button{
+.container-fijar-precios button {
     width: 50%;
+}
+
+
+/* Mobile size */
+
+@media (max-width: 767.98px) {
+    .main,
+    .container-cards {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+    .container-cards .box {
+        margin-bottom: 20px;
+    }
+    .info-contrato {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .container-info .botones,
+    .container-buttons {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    .container-info .botones button,
+    .container-buttons button {
+        margin-bottom: 20px !important;
+    }
+    .container-banco-informacion {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .container-banco-informacion .card {
+        width: 90%;
+        margin: 0px auto;
+        margin-bottom: 20px;
+    }
+    .container-banco-informacion .card:first-child {
+        margin-top: 20px;
+    }
+    .container-banco-informacion .card:last-child {
+        margin-bottom: 10px;
+    }
+    .tablero-principal {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow: auto;
+    }
+    .tablero-principal .box-chart,
+    .tablero-principal .box-chart-no-labels {
+        width: 90%;
+        height: 450px!important;
+        margin: 0px auto;
+        margin-top: 20px;
+    }
+    .tablero-principal .box-chart-no-labels .header {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+    .filter-form .row .col,
+    .container-agente .botones .row .col {
+        flex: none;
+        margin-bottom: 20px;
+    }
+    .filter-form .mt-20 {
+        margin-top: 0px !important;
+    }
+    .container-agente {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .container-info .botones button {
+        width: 100% !important;
+        position: unset;
+        margin-bottom: 0px !important;
+    }
+    .tokens-generador {
+        height: auto;
+        justify-content: center;
+        align-items: center;
+        margin: 0px auto;
+        margin-bottom: 10px;
+    }
+    .tokens-generador .w-200px {
+        width: 100% !important;
+    }
+    .tokens-generador .info-tokens,
+    .tokens-generador .equivalencia {
+        margin-left: 0px;
+    }
+    .planta-energia-form .row .col {
+        flex: none;
+        margin-bottom: 20px;
+    }
+    .planta-energia-form .mt-20 {
+        margin-top: 0px !important;
+    }
+    .container-generadores {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .container-generadores .energia-dpto,
+    .container-generadores .energia-dpto .content-card {
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .container-generadores .energia-dpto .content-card mat-accordion {
+        order: 1;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .container-generadores .energia-dpto .content-card .container-pie {
+        height: 250px!important;
+        order: 2;
+        margin-bottom: 20px;
+    }
+    .container-generadores .energia-dpto .content-card .table-container {
+        order: 3;
+        margin-bottom: 10px;
+    }
+    .loginContainer {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    .loginContainer .imagen {
+        height: 450px;
+        width: 100%;
+    }
+    .loginContainer .imagen #fondo {
+        border-radius: 0px;
+    }
+    .loginContainer .imagen .banda-imagen {
+        position: relative;
+        width: 100%;
+        top: -380px;
+    }
+    .registro-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        height: auto;
+    }
+    .registro-container .registro-header {
+        justify-content: center;
+        align-items: center;
+    }
+    .registro-container .registro-header .registro-title {
+        text-align: center;
+    }
+    .registro-container .register-form {
+        margin-top: 80px;
+        padding: 16px;
+    }
+    .registro-container .register-form .row .col {
+        flex: none;
+        margin-bottom: 20px;
+    }
+    .registro-container .register-form .mt-30 {
+        margin-top: 0px !important;
+    }
+    .form-actions-row .w-160 {
+        width: 100% !important;
+    }
+    .main-container mat-drawer {
+        width: 70% !important;
+        max-width: 250px !important;
+    }
+    .container-toolbar .toolbar .tipo-Agente {
+        display: none;
+    }
+    .actions-container {
+        display: flex;
+        flex-direction: column !important;
+    }
+    .actions-container .contratar-agente {
+        width: 100%;
+        margin-bottom: 20px;
+    }
 }

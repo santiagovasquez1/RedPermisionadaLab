@@ -36,6 +36,22 @@ library Validations {
         return false;
     }
 
+    function existsContract2(
+        address contractDir,
+        SolicitudContrato[] memory arraySolicitudes
+    ) public pure returns (bool) {
+        if (arraySolicitudes.length > 0) {
+            for (uint256 i = 0; i < arraySolicitudes.length; i++) {
+                if (
+                    contractDir == arraySolicitudes[i].infoContrato.dirContrato
+                ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     function existsAddress(address dir, address[] memory arrayDirs)
         public
         pure

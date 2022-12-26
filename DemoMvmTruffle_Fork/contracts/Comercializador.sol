@@ -21,7 +21,6 @@ contract Comercializador is Agente {
     address private certificador;
     address private bancoEnergia;
     address private comercializadorTransactionsHelper;
-    // mapping(uint256 => InfoEmisionCompra) private emisionCompra;
     AcuerdoEnergia[] private acuerdosDeCompra;
     mapping(address => AcuerdoEnergia[]) public acuerdosDeCompraPorCliente;
 
@@ -61,14 +60,6 @@ contract Comercializador is Agente {
         _;
     }
 
-    function getAcuerdosDeCompraPorCliente(address _cliente)
-        external
-        view
-        returns (AcuerdoEnergia[] memory)
-    {
-        return acuerdosDeCompraPorCliente[_cliente];
-    }
-
     function setClientesComercializador(InfoContrato memory _infoContrato)
         external
         onlyCliente
@@ -76,16 +67,7 @@ contract Comercializador is Agente {
         clientesComercializador.push(_infoContrato);
     }
 
-    function setInfoEmisionesDeCompra(
-        address _dirCliente,
-        AcuerdoEnergia memory _acuerdoCompra
-    ) public {
-        _acuerdoCompra.indexGlobal = contadorAcuerdos;
-        _acuerdoCompra.indexCliente = acuerdosDeCompraPorCliente[_dirCliente]
-            .length;
-        acuerdosDeCompraPorCliente[_dirCliente].push(_acuerdoCompra);
-        acuerdosDeCompra.push(_acuerdoCompra);
-        contadorAcuerdos++;
+    function setInfoEmisionesDeCompra() public {
         emit EmisionDeCompra();
     }
 
@@ -97,61 +79,25 @@ contract Comercializador is Agente {
         return clientesComercializador;
     }
 
-    function getAcuerdosByClienteAndFecha(
-        address _dirCliente,
-        uint256 _fechaSolicitud
-    ) public view returns (AcuerdoEnergia memory) {
-        AcuerdoEnergia memory tempAcuerdo = ComercializadorTransactionsHelper(
-            comercializadorTransactionsHelper
-        ).getAcuerdosByClienteAndFecha(
-                infoContrato.dirContrato,
-                _dirCliente,
-                _fechaSolicitud
-            );
-        return tempAcuerdo;
-    }
-
     function getHistoricoAcuerdos()
         public
         view
         returns (AcuerdoEnergia[] memory)
     {
-        return acuerdosDeCompra;
-    }
-
-    function updateAcuerdoCompra(
-        address _dirCliente,
-        uint256 index,
-        address _dirGenerador,
-        uint256 _fechaInicio
-    ) external onlyHelper(comercializadorTransactionsHelper) {
-        acuerdosDeCompraPorCliente[_dirCliente][index]
-            .dirGenerador = _dirGenerador;
-        acuerdosDeCompraPorCliente[_dirCliente][index]
-            .fechaInicio = _fechaInicio;
-        acuerdosDeCompraPorCliente[_dirCliente][index]
-            .estadoAcuerdo = EstadoAcuerdo.activo;
+        return
+            ComercializadorTransactionsHelper(comercializadorTransactionsHelper)
+                .getHistoricoAcuerdos();
     }
 
     function realizarAcuerdo(
         address _dirGenerador,
         address _dirCliente,
-        uint256 _indexAcuerdoCliente
+        uint256 _indexGlobal
     ) public authorize(msg.sender) {
         AcuerdoEnergia
             memory _acuerdoEnergia = ComercializadorTransactionsHelper(
                 comercializadorTransactionsHelper
-            ).realizarAcuerdo(_dirGenerador, _dirCliente, _indexAcuerdoCliente);
-
-        Cliente(_dirCliente).updateAcuerdoDeCompra(
-            _acuerdoEnergia,
-            _acuerdoEnergia.indexGlobal
-        );
-
-        Generador(_dirGenerador).setAcuerdoCompraPorCliente(
-            _dirCliente,
-           _acuerdoEnergia
-        );
+            ).realizarAcuerdo(_dirGenerador, _dirCliente, _indexGlobal);
     }
 
     // function rechazarCompra(address _ownerCliente, uint256 index)

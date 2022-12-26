@@ -45,19 +45,20 @@ export class TokensClienteComponent implements OnInit, OnDestroy {
       await Promise.all(promises);
       this.spinner.hide();
       this.getInfoContrato();
-      this.compraEnergiaEvent = this.clienteService.contract.events.compraEnergia({
-        fromBlock: 'latest'
-      }, (error, event) => {
-        if (error) {
-          console.log(error);
-          this.toastr.error(error.message, 'Error');
-        }
-      }).on('data', () => {
-        this.ngZone.run(() => {
-          this.toastr.success('Compra de energía realizada', 'Energía');
-          this.getInfoContrato();
-        });
-      });
+      //TODO: EVENTO ELIMINADO DE BACKEND
+      // this.compraEnergiaEvent = this.clienteService.contract.events.compraEnergia({
+      //   fromBlock: 'latest'
+      // }, (error, event) => {
+      //   if (error) {
+      //     console.log(error);
+      //     this.toastr.error(error.message, 'Error');
+      //   }
+      // }).on('data', () => {
+      //   this.ngZone.run(() => {
+      //     this.toastr.success('Compra de energía realizada', 'Energía');
+      //     this.getInfoContrato();
+      //   });
+      // });
     } catch (error) {
       console.log(error);
       this.toastr.error(error.message, 'Error');
@@ -70,13 +71,16 @@ export class TokensClienteComponent implements OnInit, OnDestroy {
   }
 
   getInfoContrato() {
+    
     this.clienteService.getInfoContrato().subscribe({
       next: (data) => {
         this.infoCliente = data;
+        console.log("THIS.NFO.CLIENTE: ",this.infoCliente)
         let observables: Observable<number>[] = [];
         observables.push(this.clienteService.getMisTokens());
         if (this.infoCliente.comercializador !== '0x0000000000000000000000000000000000000000') {
-          observables.push(this.clienteService.getTokensDelegados());
+          // TODO: CAMBIAR LA QUEMA DE DATOS
+          observables.push(this.reguladorMercado.getTokensDelegados(this.infoCliente.comercializador,this.infoCliente.owner));
         } else {
           observables.push(of(0));
         }
@@ -84,6 +88,7 @@ export class TokensClienteComponent implements OnInit, OnDestroy {
 
         forkJoin(observables).subscribe({
           next: (data: number[]) => {
+            console.log("DATA TOKENS: ",data)
             this.tokensCliente = data[0] - data[1];
             this.tokensDelegados = data[1];
             this.tokensMercado = data[2];

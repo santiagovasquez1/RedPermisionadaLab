@@ -8,6 +8,7 @@ import Comercializador from '../../../build/contracts/Comercializador.json';
 import Web3 from 'web3';
 import moment from 'moment';
 import { InfoCompraEnergia } from '../models/InfoCompraEnergia';
+import { AcuerdoEnergia } from '../models/AcuerdoEnergia';
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class ComercializadorContractService extends AgenteContractService {
             ciudad,
             direccion,
             comercializador,
-            tiposContratos
+            tipoContrato
           ] = infoContrato
 
           let tempInfo: InfoContrato = {
@@ -51,7 +52,7 @@ export class ComercializadorContractService extends AgenteContractService {
             ciudad,
             direccion,
             comercializador,
-            tipoContrato: tiposContratos
+            tipoContrato
           }
           return tempInfo;
         });
@@ -216,5 +217,26 @@ export class ComercializadorContractService extends AgenteContractService {
         return throwError(() => new Error(error.message));
       })
     )
+  }
+
+  realizarAcuerdo(_dirGenerador: string, _dirCliente: string,_indexGlobal: number): Observable<any> {
+    return from(this.contract?.methods.realizarAcuerdo(_dirGenerador, _dirCliente,_indexGlobal).send({ from: this.account })).pipe(
+      catchError((error) => {
+        return throwError(() => new Error(error.message));
+      })
+    );
+  }
+
+  getHistoricoAcuerdos(): Observable<any> {
+    return from(this.contract?.methods.getHistoricoAcuerdos().call({ from: this.account })).pipe(map((data: any) => {
+
+      console.log("fecha inicio desde servicio: ",data)
+
+      return data;
+    }),
+      catchError((error) => {
+        return throwError(() => new Error(error.message));
+      })
+    );
   }
 }

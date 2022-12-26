@@ -1,24 +1,36 @@
 <div class="container-toolbar">
     <mat-toolbar class="toolbar">
+        <button mat-icon-button *ngIf="showOptions" (click)="onOpenClick()">
+            <mat-icon>menu</mat-icon>
+      </button>
         <span class="title fw-600">Blockchain MVM</span>
         <div class="spacer"></div>
 
         <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==3">
             <mat-icon class="cursor-unset">person_pin</mat-icon>
-            Administrador
+            <span class="tipo-Agente">Administrador</span>
         </a>
 
         <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==2">
             <mat-icon class="cursor-unset">person_pin</mat-icon>
-            Generador</a>
+            <span class="tipo-Agente">
+                Generador
+            </span>
+        </a>
 
         <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==1">
             <mat-icon class="cursor-unset">person_pin</mat-icon>
-            Comercializador</a>
+            <span class="tipo-Agente">
+                Comercializador
+            </span>
+        </a>
 
         <a class="a-gris fs-16 flex-alg-center" *ngIf="tipoContrato==0">
             <mat-icon class="cursor-unset">person_pin</mat-icon>
-            Cliente</a>
+            <span class="tipo-Agente">
+                Cliente
+            </span>
+        </a>
         <!--
         <button mat-button [matMenuTriggerFor]="beforeMenu" *ngIf="tipoContrato==0">
             <mat-icon>person_pin</mat-icon>

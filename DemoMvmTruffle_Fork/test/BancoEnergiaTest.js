@@ -9,7 +9,7 @@ contract("BancoEnergia", accounts => {
 
     beforeEach(async() => {
         dateTime = await _DateTime.deployed();
-        reguladorMercado = await ReguladorMercado.new('Regulador', dateTime.address);
+        reguladorMercado = await ReguladorMercado.new('Regulador');
         bancoEnergia = await BancoEnergia.new(reguladorMercado.address, dateTime.address);
     });
 

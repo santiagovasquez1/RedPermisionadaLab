@@ -5,6 +5,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 import { InfoContrato } from 'src/app/models/infoContrato';
+import { AcuerdoContractService } from 'src/app/services/acuerdo-contract.service';
 
 @Component({
   selector: 'app-comercializador',
@@ -15,7 +16,9 @@ import { InfoContrato } from 'src/app/models/infoContrato';
 export class ComercializadorComponent implements OnInit {
   infoCliente: InfoContrato;
 
-  constructor(private comercializadorService: ComercializadorContractService,
+  constructor(
+    private comercializadorService: ComercializadorContractService,
+    private acuerdoService: AcuerdoContractService,
     private spinner: NgxSpinnerService,
     private toastr: ToastrService) { }
 
@@ -28,12 +31,12 @@ export class ComercializadorComponent implements OnInit {
           this.infoCliente = info;
         }, error: (err) => {
           console.log(err);
-          this.toastr.error('Error al cargar la información del contrato', 'Error');
+          // this.toastr.error('Error al cargar la información del contrato', 'Error');
         }
       });
     } catch (error) {
       console.log(error);
-      this.toastr.error("Error al cargar el contrato comercializador", 'Error');
+      // this.toastr.error("Error al cargar el contrato comercializador", 'Error');
     }
   }
 

@@ -1,3 +1,5 @@
+import { ToastrService } from 'ngx-toastr';
+import { OrdenDespacho } from './../models/OrdenDespacho';
 import { InfoReguladorMercado } from './../models/infoReguladorMercado';
 import { TiposContratos } from './../models/EnumTiposContratos';
 import { InfoContrato } from './../models/infoContrato';
@@ -9,8 +11,11 @@ import { Contract } from 'web3-eth-contract';
 import { AbiItem } from 'web3-utils';
 import reguladorMercado from "../../../build/contracts/ReguladorMercado.json";
 import { WinRefService } from './win-ref.service';
-import { catchError, from, map, Observable, Subscription, throwError } from 'rxjs';
+import { catchError, from, map, Observable, of, throwError, switchMap, forkJoin } from 'rxjs';
 import moment from 'moment';
+import { info } from 'console';
+import { ProviderRpcError } from '../models/JsonrpcError';
+import { GeneradorContractService } from './generador-contract.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +29,7 @@ export class ReguladorMercadoService {
   tokensDevueltos$: any;
   EnviarTokens$: any;
   web3: Web3;
-  constructor(private winRef: WinRefService, private web3ConnectService: Web3ConnectService) { }
+  constructor(private winRef: WinRefService, private web3ConnectService: Web3ConnectService, private toastr: ToastrService) { }
 
   async loadBlockChainContractData() {
     await this.web3ConnectService.loadWeb3();
@@ -65,7 +70,7 @@ export class ReguladorMercadoService {
 
   postComprarTokens(cantidadTokens: number): Observable<any> {
     let valorToken = this.web3.utils.toWei(cantidadTokens.toString(), 'finney');
-    return from(this.contract?.methods.ComprarTokens(cantidadTokens).send({ from: this.account, value: valorToken })).pipe(
+    return from(this.contract?.methods.ComprarTokens(cantidadTokens).send({ from: this.account })).pipe(
       catchError((error) => {
         return throwError(() => new Error(error.message));
       })
@@ -194,23 +199,22 @@ export class ReguladorMercadoService {
   }
 
   private mappingSolicitud(data: any): SolicitudContrato {
-    const [infoContrato, tipoContrato, estadoSolicitud, fechaSolicitud, fechaAprobacion] = data;
-    const [dirContrato, owner, nit, empresa, contacto, telefono, correo, departamento, ciudad, direccion, comercializador, tiposContratos] = infoContrato;
+    let [infoContrato, tipoContrato, estadoSolicitud, fechaSolicitud, fechaAprobacion] = data;
 
     let solicitudDef: SolicitudContrato = {
       infoContrato: {
-        owner,
-        ciudad,
-        direccion,
-        telefono,
-        comercializador,
-        contacto,
-        correo,
-        departamento,
-        nit,
-        dirContrato,
-        empresa,
-        tipoContrato: parseInt(tiposContratos) as TiposContratos
+        owner: infoContrato.owner,
+        ciudad: infoContrato.ciudad,
+        direccion: infoContrato.direccion,
+        telefono: infoContrato.telefono,
+        comercializador: infoContrato.comercializador,
+        contacto: infoContrato.contacto,
+        correo: infoContrato.correo,
+        departamento: infoContrato.departamento,
+        nit: infoContrato.nit,
+        dirContrato: infoContrato.dirContrato,
+        empresa: infoContrato.empresa,
+        tipoContrato: parseInt(tipoContrato) as TiposContratos
       },
       tipoContrato: parseInt(tipoContrato) as TiposContratos,
       estadoSolicitud: parseInt(estadoSolicitud) as EstadoSolicitud,
@@ -219,5 +223,4 @@ export class ReguladorMercadoService {
     }
     return solicitudDef;
   }
-
 }

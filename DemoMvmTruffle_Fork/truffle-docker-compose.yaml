@@ -16,3 +16,4 @@ services:
 networks:
   redpermisionadalab_rpc:
     external: true
+

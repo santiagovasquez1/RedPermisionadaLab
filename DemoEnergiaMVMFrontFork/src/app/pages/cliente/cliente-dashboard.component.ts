@@ -52,19 +52,20 @@ export class ClienteDashboardComponent implements OnInit, OnDestroy {
       promises.push(this.clienteService.loadBlockChainContractData(dirContract));
       promises.push(this.certificado.loadBlockChainContractData(''));
       await Promise.all(promises);
-      this.compraEnergiaEvent = this.clienteService.contract.events.compraEnergia({
-        fromBlock: 'latest'
-      }, (error, event) => {
-        if (error) {
-          console.log(error);
-          this.toastr.error(error.message, 'Error');
-        }
-      }).on('data', (event) => {
-        this.ngZone.run(() => {
-          this.toastr.success('Compra de energía realizada', 'Energía');
-          this.getInfoContrato();
-        });
-      });
+      //TODO: EVENTO ELIMINADO DE BACKEND
+      // this.compraEnergiaEvent = this.clienteService.contract.events.compraEnergia({
+      //   fromBlock: 'latest'
+      // }, (error, event) => {
+      //   if (error) {
+      //     console.log(error);
+      //     this.toastr.error(error.message, 'Error');
+      //   }
+      // }).on('data', (event) => {
+      //   this.ngZone.run(() => {
+      //     this.toastr.success('Compra de energía realizada', 'Energía');
+      //     this.getInfoContrato();
+      //   });
+      // });
       this.getInfoContrato();
     } catch (error) {
       console.log(error);

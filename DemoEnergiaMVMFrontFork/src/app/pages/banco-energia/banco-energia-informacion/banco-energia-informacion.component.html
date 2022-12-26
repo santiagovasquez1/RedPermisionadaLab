@@ -21,12 +21,12 @@
                 <a class="text-gris-p" (click)="changeBanco('Contratos')" >Energía en contratos</a>
             </div>
             
+            
         </mat-expansion-panel>
     </mat-accordion>
 
     <div class="container-fijar-precios">
-        <button class="button-mvm" mat-button (click)="onFijarPrecios()">Fijar precios de energía</button>
-        
+        <button class="button-mvm" *ngIf="tipoAgente == '3'" (click)="onFijarPrecios()">Fijar precio de energía</button>
     </div>
 
 
@@ -44,7 +44,7 @@
             </div>
             <span class="fw-500 color-gris">Precio</span>
             <div class="input-text div-text">
-                <span>{{energiasDisponibles[0].precio}} <b>Tokens/MWh</b></span>
+                <span>{{precioEnergia}} <b>Tokens/MWh</b></span>
             </div>
         </div>
 
@@ -64,7 +64,7 @@
             </div>
             <span class="fw-500 color-gris">Precio</span>
             <div class="input-text div-text">
-                <span>{{energiasDisponibles[1].precio}} <b>Tokens/MWh</b></span>
+                <span>{{precioEnergia}} <b>Tokens/MWh</b></span>
             </div>
         </div>
 

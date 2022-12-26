@@ -1,3 +1,4 @@
+import { EstadoAcuerdo } from 'src/app/models/AcuerdoEnergia';
 import { Pipe, PipeTransform } from '@angular/core';
 import { EstadoCompra } from 'src/app/models/InfoEmisionCompra';
 
@@ -6,21 +7,21 @@ import { EstadoCompra } from 'src/app/models/InfoEmisionCompra';
 })
 export class EstadoCompraPipe implements PipeTransform {
 
-  transform(value: string | EstadoCompra): string {
-    let estadoCompra: EstadoCompra;
+  transform(value: string | EstadoAcuerdo): string {
+    let estadoCompra: EstadoAcuerdo;
     if (typeof value == 'string') {
-      estadoCompra = parseInt(value) as EstadoCompra;
+      estadoCompra = parseInt(value) as EstadoAcuerdo;
     } else {
-      estadoCompra = value as EstadoCompra;
+      estadoCompra = value as EstadoAcuerdo;
     }
 
     switch (estadoCompra) {
-      case EstadoCompra.aprobada:
-        return 'Aprobada';
-      case EstadoCompra.pendiente:
+      case EstadoAcuerdo.activo:
+        return 'Activo';
+      case EstadoAcuerdo.pendiente:
         return 'Pendiente';
-      case EstadoCompra.rechazada:
-        return 'Rechazada';
+      case EstadoAcuerdo.cerrado:
+        return 'Cerrado';
       default:
         return 'Desconocido';
     }

@@ -9,39 +9,44 @@
     <div class="table-container mt-30 fadeIn">
         <mat-table #table [dataSource]="dataSource" class="mvm-table">
             <ng-container matColumnDef="empresaCliente">
-                <mat-header-cell *matHeaderCellDef>Empresa</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.empresaCliente}}</mat-cell>
+                <mat-header-cell *matHeaderCellDef>Cliente</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.dataCliente.nombreAgente}}</mat-cell>
             </ng-container>
-            <ng-container matColumnDef="fechaEmision">
-                <mat-header-cell *matHeaderCellDef>Fecha de solicitud</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.fechaEmision}}</mat-cell>
+            <ng-container matColumnDef="empresaGenerador">
+                <mat-header-cell *matHeaderCellDef>Generador</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.dataGenerador.nombreAgente}}</mat-cell>
             </ng-container>
-            <ng-container matColumnDef="fechaAprobacion">
-                <mat-header-cell *matHeaderCellDef>Fecha de aprobación</mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                    <span *ngIf="element.estado == 0"></span>
-                    <span *ngIf="element.estado == 1">{{element.fechaAprobacion}}</span>
-                </mat-cell>
+            <ng-container matColumnDef="estado">
+                <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.estadoAcuerdo|estadoCompra}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fechaInicio">
+                <mat-header-cell *matHeaderCellDef>Fecha Inicio</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.fechaSolicitud}}</mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="fechaFin">
+                <mat-header-cell *matHeaderCellDef>Fecha Fin</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.fechaFin}}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="tipoEnergia">
                 <mat-header-cell *matHeaderCellDef>Tipo de energia</mat-header-cell>
                 <mat-cell *matCellDef="let element">{{element.tipoEnergia}}</mat-cell>
             </ng-container>
-            <ng-container matColumnDef="cantidadEnergia">
-                <mat-header-cell *matHeaderCellDef>Cantidad de energia</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.cantidadDeEnergia}} MWh</mat-cell>
+            <ng-container matColumnDef="energiaTotal">
+                <mat-header-cell *matHeaderCellDef>Energía total</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidadEnergiaTotal}} MWh</mat-cell>
             </ng-container>
-            <ng-container matColumnDef="estado">
-                <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
-                <mat-cell *matCellDef="let element">{{element.estado|estadoCompra}}</mat-cell>
+            <ng-container matColumnDef="energiaEntregada">
+                <mat-header-cell *matHeaderCellDef>Energía entregada</mat-header-cell>
+                <mat-cell *matCellDef="let element">{{element.cantidadEnergiaInyectada}}</mat-cell>
             </ng-container>
             <ng-container matColumnDef="acciones">
                 <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
                 <mat-cell *matCellDef="let element">
-                    <button matRipple class="mvm-action-button approve" [disabled]="element.estado == 1" (click)="onRealizarCompra(element,element.index)">
+                    <button matRipple class="mvm-action-button approve" [disabled]="element.estadoAcuerdo !== '0'" (click)="onRealizarCompra(element)">
                         <mat-icon>done</mat-icon>
                     </button>
-                    <button matRipple class="mvm-action-button reject" [disabled]="element.estado == 1" (click)="onRechazarCompra(element.ownerCliente,element.index)">
+                    <button matRipple class="mvm-action-button reject" [disabled]="element.estadoAcuerdo !== 0" (click)="onRechazarCompra(element.ownerCliente,element.index)">
                         <mat-icon>close</mat-icon>
                     </button>
                 </mat-cell>

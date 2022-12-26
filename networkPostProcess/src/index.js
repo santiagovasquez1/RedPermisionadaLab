@@ -1,6 +1,6 @@
 const axios = require('axios');
 const fs = require('fs');
-
+let counter = 0;
 
 const addNodesToNetwork = async(enodes, urls) => {
     const data = {
@@ -63,22 +63,27 @@ const main = async() => {
             await main();
         } else {
             try {
-                const urls = fs.readFileSync('Urls.params', 'utf-8').split('\n');
-                const enodesTemp = fs.readFileSync('Enodes.params', 'utf-8').split('\n');
+                const urls = fs.readFileSync('Urls.params', 'utf-8').split(/\r?\n|\r|\n/g);
+                const enodesTemp = fs.readFileSync('Enodes.params', 'utf-8').split(/\r?\n|\r|\n/g);
+
                 const enodes = enodesTemp.slice(0, enodesTemp.length - 1);
                 const responses1 = await addNodesToNetwork(enodes, urls);
                 const responses2 = await adminAddPeer(enodes, urls);
 
-                console.log(responses1.map(x => x.data))
-                console.log(responses2.map(x => x.data))
+                console.log(responses1.map(x => x.data));
+                console.log(responses2.map(x => x.data));
+
                 process.exit();
             } catch (error) {
                 setTimeout(async() => {
+                    counter++;
                     console.log(error)
                     await main();
                 }, 5000);
-            }
 
+                // console.warn("Se supero el numero de reintentos");
+                // process.exit();
+            }
         }
     }, 2000);
 

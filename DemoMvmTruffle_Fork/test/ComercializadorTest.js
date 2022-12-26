@@ -12,6 +12,8 @@ const MvmClienteFactory = artifacts.require("MvmClienteFactory");
 const Comercializador = artifacts.require("Comercializador");
 const Cliente = artifacts.require("Cliente");
 const Generador = artifacts.require("Generador");
+const AcuerdosLedger = artifacts.require('AcuerdosLedger');
+const DespachosEnergia = artifacts.require("DespachosEnergia");
 
 contract("Comercializador", accounts => {
     const admin = accounts[0];
@@ -26,12 +28,14 @@ contract("Comercializador", accounts => {
     let generadorFactory;
     let regulador;
     let banco;
+    let acuerdosLedger;
     let clienteAddress;
     let comercializadorAddress;
     let generadorAddress;
     let _dateTime;
     let certificador;
     let plantaEnergiaFactory;
+    let despachosEnergia;
     const infoContratoComercializador = {
         dirContrato: '0x0000000000000000000000000000000000000000',
         owner: comercializadorOwner,
@@ -81,13 +85,16 @@ contract("Comercializador", accounts => {
             Certificador.deployed(),
             MvmPlantaEnergiasFactory.deployed()
         ]);
-        regulador = await ReguladorMercado.new('Regulador mercado', _dateTime.address);
+
+        regulador = await ReguladorMercado.new('Regulador mercado');
         banco = await BancoEnergia.new(regulador.address, _dateTime.address);
+        acuerdosLedger = await AcuerdosLedger.new(regulador.address);
+        despachosEnergia = await DespachosEnergia.new(_dateTime.address);
 
         let helpersInstances = [];
-        helpersInstances.push(ClienteTransactionsHelper.new(regulador.address, banco.address));
-        helpersInstances.push(ComercializadorTransactionsHelper.new(regulador.address, banco.address));
-        helpersInstances.push(GeneradorTransactionsHelper.new(regulador.address, plantaEnergiaFactory.address, banco.address));
+        helpersInstances.push(ClienteTransactionsHelper.new(regulador.address, banco.address, acuerdosLedger.address, _dateTime.address));
+        helpersInstances.push(ComercializadorTransactionsHelper.new(regulador.address, banco.address, acuerdosLedger.address));
+        helpersInstances.push(GeneradorTransactionsHelper.new(regulador.address, plantaEnergiaFactory.address, banco.address, acuerdosLedger.address, despachosEnergia.address));
         [clienteTransactionsHelper, comercializadorTransactionsHelper, generadorTransactionsHelper] = await Promise.all(helpersInstances);
 
         let factoriesInstances = [];
@@ -142,12 +149,15 @@ contract("Comercializador", accounts => {
 
             await cliente.contratarComercializador(comercializadorAddress, { from: clienteOwner });
             await cliente.comprarEnergia('solar', 300, 100, { from: clienteOwner });
-            const acuerdosCliente = await comercializador.getAcuerdosDeCompraPorCliente(clienteAddress);
+            acuerdosCliente = await acuerdosLedger.getAcuerdosByCliente(clienteAddress);
+            let indexGlobal = parseInt(acuerdosCliente[0]['indexGlobal']);
+            await comercializador.realizarAcuerdo(generadorAddress, clienteAddress, indexGlobal, { from: comercializadorOwner });
 
-            await comercializador.realizarAcuerdo(generadorAddress, clienteAddress, acuerdosCliente.length - 1, { from: comercializadorOwner });
-            const acuerdosGenerador = await generador.getAcuerdosDeCompraPorCliente(clienteAddress);
+            acuerdosCliente = await cliente.getAcuerdosDeCompra();
+            const acuerdosGenerador = await generador.getAcuerdosDeCompraGenerador();
 
             assert.equal(acuerdosGenerador[0]['dirCliente'], acuerdosCliente[0]['dirCliente']);
+            assert.equal(acuerdosGenerador[0]['indexGlobal'], acuerdosCliente[0]['indexGlobal']);
         });
     });
 });

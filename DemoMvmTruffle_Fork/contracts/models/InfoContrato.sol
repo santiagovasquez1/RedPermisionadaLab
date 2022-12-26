@@ -188,21 +188,29 @@ struct RequestCompraEnergia {
 
 struct OrdenDespacho {
     address dirGenerador;
+    string nombreGenerador;
     uint256 cantidadEnergia;
     uint256 cantidadProducida;
     uint256 fechaDespacho;
+    uint256 index;
 }
 
 enum EstadoAcuerdo {
     pendiente,
     activo,
+    cancelado,
     cerrado
 }
 
+struct DataAgenteAcuerdo {
+    address dirContrato;
+    string nombreAgente;
+}
+
 struct AcuerdoEnergia {
-    address dirCliente;
-    address dirGenerador;
-    address dirComercializador;
+    DataAgenteAcuerdo dataCliente;
+    DataAgenteAcuerdo dataGenerador;
+    DataAgenteAcuerdo dataComercializador;
     string tipoEnergia;
     uint256 cantidadEnergiaTotal;
     uint256 cantidadEnergiaInyectada;
@@ -210,6 +218,6 @@ struct AcuerdoEnergia {
     uint256 fechaInicio;
     uint256 fechaFin;
     EstadoAcuerdo estadoAcuerdo;
-    uint256 indexCliente;
     uint256 indexGlobal;
+    uint256 valorContrato;
 }

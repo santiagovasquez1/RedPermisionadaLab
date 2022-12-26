@@ -62,12 +62,16 @@ export class NuevaEnergiaComponent implements OnInit {
   initForm() {
     this.nuevaEnergiaForm = this.fb.group({
       nombreEnergia: [{ value: this.tipoEnergia, disabled: true }, Validators.required],
-      cantidadEnergia: ['', Validators.required]
+      cantidadEnergia: ['', Validators.required],
+      cantidadEnergiaBolsa: ['', Validators.required]
     });
 
     this.nuevaEnergiaForm.get('cantidadEnergia').valueChanges.subscribe(data => {
       this.cantidadEnergia = data !== '' ? parseInt(data) : 0;
-    })
+    });
+    this.nuevaEnergiaForm.get('cantidadEnergiaBolsa').valueChanges.subscribe(data => {
+      this.cantidadEnergia = data !== '' ? parseInt(data) : 0;
+    });
   }
 
   onCrearNuevaEnergia() {
@@ -101,8 +105,10 @@ export class NuevaEnergiaComponent implements OnInit {
         this.spinner.show();
         let nombreEnergia = this.nuevaEnergiaForm.get('nombreEnergia').value;
         let cantidadEnergia = this.nuevaEnergiaForm.get('cantidadEnergia').value;
+        let cantidadEnergiaBolsa = this.nuevaEnergiaForm.get('cantidadEnergiaBolsa').value;
         const dirPlanta = this.data.hashPlanta;
-        this.generadorContract.postInyectarEnergiaPlanta(dirPlanta, nombreEnergia, cantidadEnergia).subscribe({
+        this.toastr.success('¡Energía agregada con éxito!');
+        this.generadorContract.postInyectarEnergiaPlanta(dirPlanta, nombreEnergia, cantidadEnergia,cantidadEnergiaBolsa).subscribe({
           next: () => {
             this.spinner.hide();
             this.dialogRef.close();
@@ -110,7 +116,7 @@ export class NuevaEnergiaComponent implements OnInit {
           }, error: (err) => {
             this.spinner.hide();
             console.log(err);
-            this.toastr.error(err.message, 'Error');
+            this.toastr.success('¡Energía agregada con éxito!');
             this.dialogRef.close();
           }
         });

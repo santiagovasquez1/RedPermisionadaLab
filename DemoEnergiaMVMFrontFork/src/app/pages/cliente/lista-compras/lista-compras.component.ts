@@ -20,6 +20,8 @@ import { forkJoin, Observable } from 'rxjs';
 import { InfoContrato } from 'src/app/models/infoContrato';
 import { InfoEnergia } from 'src/app/models/InfoEnergia';
 import { ContratarComercializadorComponent } from '../contratar-comercializador/contratar-comercializador.component';
+import { AcuerdoEnergia, EstadoAcuerdo } from 'src/app/models/AcuerdoEnergia';
+import { AcuerdoEnergiaComponent } from '../acuerdo-energia/acuerdo-energia.component';
 
 @Component({
   selector: 'app-lista-compras',
@@ -49,6 +51,8 @@ export class ListaComprasComponent implements OnInit, OnDestroy {
   tokensDelegados: number = 0;
   infoCliente: InfoContrato;
   nombreComercializador;
+
+  
 
   constructor(private bancoEnergia: BancoEnergiaService,
     private cliente: ClienteContractService,
@@ -80,20 +84,21 @@ export class ListaComprasComponent implements OnInit, OnDestroy {
       await Promise.all(promises);
 
       this.getInfoContrato();
-      this.compraEnergiaEvent = this.cliente.contract.events.compraEnergia({
-        fromBlock: 'latest'
-      }, (error, data) => {
-        if (error) {
-          console.log(error);
-          this.toastr.error(error.message, 'Error');
-        }
-      }).on('data', () => {
-        this.ngZone.run(() => {
-          this.toastr.success('Compra de energía realizada', 'Energía');
-          this.getComprasCliente();
-          this.getInfoContrato();
-        });
-      });
+      //TODO: REVISAR CAMBIO EVENTO DE COMPRA DE ENERGÍA - YA NO EXISTE EN BACKEND
+      // this.compraEnergiaEvent = this.cliente.contract.events.compraEnergia({
+      //   fromBlock: 'latest'
+      // }, (error, data) => {
+      //   if (error) {
+      //     console.log(error);
+      //     this.toastr.error(error.message, 'Error');
+      //   }
+      // }).on('data', () => {
+      //   this.ngZone.run(() => {
+      //     this.toastr.success('Compra de energía realizada', 'Energía');
+      //     this.getComprasCliente();
+      //     this.getInfoContrato();
+      //   });
+      // });
       this.getComprasCliente();
     } catch (error) {
       this.toastr.error(error.message, 'Error');
@@ -214,6 +219,54 @@ export class ListaComprasComponent implements OnInit, OnDestroy {
         this.getInfoContrato();
       }
     })
+  }
+
+  onContratoEnergia(){
+
+    let dialogRef = this.dialog.open(AcuerdoEnergiaComponent, {
+      width: '500px',
+      data: {
+        dirContrato: localStorage.getItem('dirContract'),
+        tokensDelegados: this.tokensDelegados
+      }
+    });
+
+    dialogRef.afterClosed().subscribe({
+      next: () => {
+        this.getInfoContrato();
+      }
+    })
+
+
+    // let acuerdoEnergia: AcuerdoEnergia = {
+    //   dirCliente: "0x19340ba17d7E375c37C36Bf349835FE930E329F8",
+    //   dirGenerador: '0x26cd32E0Ef557d88e89CB841C1b58d6623Cd42BD',
+    //   dirComercializador: '0x5abF7441F6C394588738eC07f190706c38b338B2',
+    //   tipoEnergia: 'solar',
+    //   cantidadEnergiaTotal: 0,
+    //   cantidadEnergiaInyectada: 0,
+    //   fechaSolicitud: Math.trunc(Date.now() / 1000),
+    //   fechaInicio: Math.trunc(Date.now() / 1000),
+    //   fechaFin: Math.trunc(Date.now() / 1000),
+    //   estadoAcuerdo: EstadoAcuerdo.activo,
+    //   indexCliente: 0,
+    //   indexGlobal: 0,
+    // }
+    // console.log("ACUERDO DE ENERGÍA: ",acuerdoEnergia)
+    
+    // let tipoEnergia = 'solar';
+    // let cantidad = 40
+    // this.cliente.postComprarEnergia(tipoEnergia, cantidad).subscribe({
+    //   next: (data) => {
+    //     this.infoCliente = data;
+    //     this.toastr.success("realizado","exito");
+    //     this.spinner.hide();
+    //   }, error: (error) => {
+    //     console.log(error);
+    //     this.toastr.error(error.message, 'Error');
+    //     this.spinner.hide();
+    //   }
+    // });
   }
 
   onContratar() {

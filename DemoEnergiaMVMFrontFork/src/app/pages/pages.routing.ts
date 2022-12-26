@@ -1,3 +1,4 @@
+import { HistoricoDespachosComponent } from './regulador-mercado/historico-despachos/historico-despachos.component';
 import { TokensGeneradorComponent } from './generador/tokens-generador/tokens-generador.component';
 import { ListaComprasComponent } from './cliente/lista-compras/lista-compras.component';
 import { ListaPlantasComponent } from './generador/lista-plantas/lista-plantas.component';
@@ -62,6 +63,10 @@ const routes: Routes = [
             {
                 path: "regulador-mercado/ordenes-despacho",
                 component: OrdenesDespachoComponent,
+                canActivate: [AuthGuard]
+            }, {
+                path: "regulador-mercado/historico-ordenes-despacho",
+                component: HistoricoDespachosComponent,
                 canActivate: [AuthGuard]
             },
             {

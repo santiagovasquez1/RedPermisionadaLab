@@ -69,8 +69,7 @@ export class InfoCertificadoAgenteComponent implements OnInit {
           this.infoCertificadoAgente = data[1] as InfoCertificadoAgente
           if (this.tipoAgente == TiposContratos.Cliente) {
             await this.cliente.loadBlockChainContractData(this.infoCertificadoAgente.dirContratoAgente);
-            debugger;
-            this.cliente.getAcumuladoVenta().subscribe({
+             this.cliente.getAcumuladoVenta().subscribe({
               next: (data) => {
                 this.cantidadEnergia = data;
                 this.spinner.hide();

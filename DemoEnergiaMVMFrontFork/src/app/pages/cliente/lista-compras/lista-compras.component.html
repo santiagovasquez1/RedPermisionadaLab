@@ -16,7 +16,8 @@
                 Contratar
             </button >
         </div>
-        <button class="button-mvm w-160" mat-ripple (click)="onSolicitarCompra()">Solicitar compra</button>
+            <button class="button-mvm w-160" mat-ripple (click)="onSolicitarCompra()" *ngIf="false">Solicitar compra</button>
+            <button class="button-mvm w-160" mat-ripple (click)="onContratoEnergia()">Solicitar acuerdo</button>
         </div>
 
         <div class="table-container mt-20 fadeIn">

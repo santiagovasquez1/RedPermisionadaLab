@@ -41,6 +41,7 @@ export class GeneradorComponent implements OnInit {
   async ngOnInit(): Promise<void> {
 
     this.dirContract = localStorage.getItem('dirContract');
+    console.log("dircontarto en generador component: ",this.dirContract)
     try {
       let promises: Promise<void>[] = [];
       promises.push(this.regulardorMercado.loadBlockChainContractData());
@@ -70,8 +71,8 @@ export class GeneradorComponent implements OnInit {
     let observables: Observable<any>[] = [];
     observables.push(this.generadorService.getInfoContrato());
     observables.push(this.bancoEnergia.getTiposEnergiasDisponibles());
-    observables.push(this.generadorService.getMisTokens());
-
+    // observables.push(this.generadorService.getMisTokens()); //TODO: Error al traer los tokens de generador
+    
     this.spinner.show();
     forkJoin(observables).subscribe({
       next: (data: any[]) => {

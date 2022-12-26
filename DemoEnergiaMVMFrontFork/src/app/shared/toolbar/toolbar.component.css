@@ -1,26 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
-
-.rol{
+.rol {
     font-size: 16px;
-    font-family: 'Montserrat',"Helvetica Neue", sans-serif;
+    font-family: 'Montserrat', "Helvetica Neue", sans-serif;
 }
 
 .spacer {
     flex: 1 1 auto;
 }
 
-.avatar-container img{
+.avatar-container img {
     width: 50%;
 }
 
-mat-toolbar button{
+mat-toolbar button {
     color: var(--gris-claro);
 }
 
-.toolbar .btn-rol:hover{
+.toolbar .btn-rol:hover {
     border-radius: 15px;
 }
-
 
 
 /* .avatar-container img {

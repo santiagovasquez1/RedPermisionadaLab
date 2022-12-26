@@ -37,6 +37,7 @@ export class ReguladorMercadoComponent implements OnInit, OnDestroy {
         if(this.infoRegulador){
           this.regulardorMercado.getTokensDisponibles().subscribe({
             next: (data) => {
+              console.log("DATA REGULADOR: ",data)
               this.infoRegulador.cantidadTokens = data;
             },
             error: (err) => {

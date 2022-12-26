@@ -135,7 +135,7 @@ while ! [[ -d "$contractsBuild/contracts" ]]; do
     sleep 5
 done
 
-cp -rv "$contractsBuild" "$workdir/DemoEnergiaMVMFrontFork/build"
+cp -rf "$contractsBuild" "$workdir/DemoEnergiaMVMFrontFork/build"
 
 # if [[ "$(docker images -q demomvm:v1 2>/dev/null)" == "" ]]; then
 #     docker compose -f "$workDir/DemoEnergiaMVMFrontFork/frontend-docker-compose.yaml" build
