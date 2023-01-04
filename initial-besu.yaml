@@ -1,5 +1,11 @@
 version: "3"
 services:
+  encryptservice:
+    image: debian:rc-buggy-20221219
+    container_name: encryptservice
+    command: bash -c "apt-get update && apt-get install -y openssl && openssl req -x509 -newkey rsa:4096 -keyout /certs/key.pem -out /certs/cert.pem -days 365 -nodes -subj '/CN=localhost'"
+    volumes:
+      - ./certs:/certs
   besu-inital:
     image: hyperledger/besu:22.10.0-RC2
     container_name: initial-config
@@ -13,3 +19,5 @@ services:
       - |
         cd /besu-config/
         besu operator generate-blockchain-config --config-file=./initialGenesis.json --to=networkFiles --private-key-file-name=key
+    depends_on:
+      - encryptservice

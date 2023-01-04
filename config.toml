@@ -14,6 +14,9 @@ rpc-http-enabled=true
 rpc-http-port=RCPDEFAULT
 rpc-http-cors-origins=["*"]
 rpc-http-api=[ 'ADMIN', 'ETH', 'NET', 'WEB3', 'CLIQUE', 'IBFT', 'PERM', 'DEBUG', 'MINER', 'EEA', 'PRIV', 'TXPOOL']
+rpc-ws-enabled=true
+rpc-ws-port="6174"
+rpc-ws-api=[ 'ADMIN', 'ETH', 'NET', 'WEB3', 'CLIQUE', 'IBFT', 'PERM', 'DEBUG', 'MINER', 'EEA', 'PRIV', 'TXPOOL']
 
 # Mining
 miner-enabled=true

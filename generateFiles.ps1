@@ -3,6 +3,7 @@ $networkNodes = "networkNodes";
 $EnodeParams = "Enodes.params"
 $UrlsParams = "Urls.params";
 $contractsBuild = "build";
+$certs = "certs";
 $numNodes = $args[0];
 $nodePrefix = $args[1];
 $p2pDefault = [int]$args[2];
@@ -12,19 +13,23 @@ $nodesOfNetwork = @();
 $enodes = @();
 
 if (Test-Path -Path $networkNodes) {
-    Remove-Item  $networkNodes -Recurse -Force
+    Remove-Item  $networkNodes -Recurse -Force;
+}
+
+if (Test-Path -Path $workDir/$certs) {
+    Remove-Item $workDir/$certs -Recurse -Force;
 }
 
 if (Test-Path -Path $workDir/$contractsBuild) {
-    Remove-Item -Recurse -Force $workDir/$contractsBuild
+    Remove-Item -Recurse -Force $workDir/$contractsBuild;
 }
 
 if (Test-Path -Path $EnodeParams) {
-    Remove-Item  $EnodeParams -Recurse -Force
+    Remove-Item  $EnodeParams -Recurse -Force;
 }
 
 if (Test-Path -Path $UrlsParams) {
-    Remove-Item  $UrlsParams -Recurse -Force
+    Remove-Item  $UrlsParams -Recurse -Force;
 }
 
 docker compose -f "./initial-besu.yaml" down;
@@ -133,7 +138,7 @@ for ($Counter = 0; $Counter -lt $keysDirs.Length; $Counter++) {
     Write-Output $enodes[$Counter];
 }
 
-docker compose -f "./set-network-docker-compose.yaml" up -d 
+docker compose -f "./set-network-docker-compose.yaml" up -d;
 
 $existsImage = docker images -q networkpostprocess:v1;
 if ( $null -eq $existsImage) {
