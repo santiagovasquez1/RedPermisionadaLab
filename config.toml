@@ -6,12 +6,12 @@ host-allowlist=["*"]
 min-gas-price=0
 
 #Peers
-p2p-port=P2PDEFAULT
+p2p-port=30000
 max-peers=42
 
 #rcp
 rpc-http-enabled=true
-rpc-http-port=RCPDEFAULT
+rpc-http-port=8540
 rpc-http-cors-origins=["*"]
 rpc-http-api=[ 'ADMIN', 'ETH', 'NET', 'WEB3', 'CLIQUE', 'IBFT', 'PERM', 'DEBUG', 'MINER', 'EEA', 'PRIV', 'TXPOOL']
 rpc-ws-enabled=true
