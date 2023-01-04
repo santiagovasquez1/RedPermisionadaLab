@@ -151,6 +151,11 @@ while (-Not ($existNetworkFiles)) {
     Write-Output "Esperando a que se generen los archivos de configuracion";
     Start-Sleep 5;
     $existNetworkFiles = Test-Path -Path $networkFiles;
+    $keysDirs = Get-ChildItem $networkFiles/keys;
+    if ($keysDirs.Length -eq 0) {
+        docker compose -f "./initial-besu.yaml" down;
+        Write-Error "No se generaron las llaves" -ErrorAction Stop;
+    }
 }
 
 docker compose -f "./initial-besu.yaml" down;
