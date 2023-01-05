@@ -3,7 +3,8 @@ $networkNodes = "networkNodes";
 $EnodeParams = "Enodes.params"
 $UrlsParams = "Urls.params";
 $contractsBuild = "build";
-$networkFiles = "./besu-config/networkFiles";
+$besuConfig = "./besu-config";
+$networkFiles = $besuConfig + "/" + "networkFiles";
 $certs = "certs";
 $numNodes = $args[0];
 $nodePrefix = $args[1];
@@ -33,8 +34,8 @@ if (Test-Path -Path $UrlsParams) {
     Remove-Item  $UrlsParams -Recurse -Force;
 }
 
-if (Test-Path -Path $networkFiles) {
-    Remove-Item  $networkFiles -Recurse -Force
+if (Test-Path -Path $besuConfig) {
+    Remove-Item  $besuConfig -Recurse -Force
 }
 
 docker compose -f "./initial-besu.yaml" down;
@@ -67,6 +68,30 @@ if (0 -eq $rpcDefault) {
 if ($null -eq $gateWay) {
     $gateWay = "172.21.0.1"
 }
+
+mkdir $besuConfig;
+# $initialGenesis = Get-Content -Path $workDir/"initialGenesis.json";
+# $initialGenesis -replace '"Replace"', $numNodes | Out-File $besuConfig/"initialGenesis.json";
+Copy-Item -Path $workDir/"initialGenesis.json" $besuConfig;
+
+docker compose -f "./initial-besu.yaml" up -d;
+$existNetworkFiles = Test-Path -Path $networkFiles;
+while (-Not ($existNetworkFiles)) {
+    Write-Output "Esperando a que se generen los archivos de configuracion";
+    Start-Sleep 5;
+    $existNetworkFiles = Test-Path -Path $networkFiles;
+}
+
+if ($existNetworkFiles) {
+    $keysDirs = Get-ChildItem $networkFiles/keys;
+    if ($keysDirs.Length -eq 0) {
+        docker compose -f "./initial-besu.yaml" down;
+        Remove-Item  $networkFiles -Recurse -Force
+        Write-Error "No se generaron las llaves" -ErrorAction Stop;
+    }
+}
+
+docker compose -f "./initial-besu.yaml" down;
 
 $nodeProperties = [ordered]@{
     image          = "hyperledger/besu:22.10.0-RC2"
@@ -139,26 +164,7 @@ for ($i = 0; $i -lt $numNodes; $i++) {
     $nodesOfNetwork += $nodeName;
 }
 
-# $initialGenesis = Get-Content -Path $workDir/"initialGenesis.json" | ConvertFrom-Json;
-# $initialGenesis.blockchain.nodes.count = $numNodes;
-# $initialGenesis | ConvertTo-Json -Depth 3 | Out-File $workDir/"initialGenesis.json"
 $networkTemplate | ConvertTo-Yaml | Out-File $workDir/"set-network-docker-compose.yaml"
-
-docker compose -f "./initial-besu.yaml" up -d
-
-$existNetworkFiles = Test-Path -Path $networkFiles
-while (-Not ($existNetworkFiles)) {
-    Write-Output "Esperando a que se generen los archivos de configuracion";
-    Start-Sleep 5;
-    $existNetworkFiles = Test-Path -Path $networkFiles;
-    $keysDirs = Get-ChildItem $networkFiles/keys;
-    if ($keysDirs.Length -eq 0) {
-        docker compose -f "./initial-besu.yaml" down;
-        Write-Error "No se generaron las llaves" -ErrorAction Stop;
-    }
-}
-
-docker compose -f "./initial-besu.yaml" down;
 
 $keysDirs = Get-ChildItem $networkFiles/keys;
 $Counter = 0;

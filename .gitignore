@@ -8,6 +8,7 @@ bin-release/
 .settings/
 networkFiles/
 networkNodes/
+besu-config/
 mysql/
 build/
 
@@ -284,3 +285,4 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+besu-config/initialGenesis.json
